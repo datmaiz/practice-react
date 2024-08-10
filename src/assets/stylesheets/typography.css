@@ -1,0 +1,21 @@
+@font-face {
+  font-family: "Roboto-700";
+  src: local("Roboto-Bold"), url(../fonts/Roboto-Bold.ttf), format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-300";
+  src: local("Roboto-Light"), url(../fonts/Roboto-Light.ttf), format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-400";
+  src: local("Roboto-Regular"), url(../fonts/Roboto-Regular.ttf), format("truetype");
+}
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
