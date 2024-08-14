@@ -13,6 +13,21 @@
   src: local("Roboto-Regular"), url(../fonts/Roboto-Regular.ttf), format("truetype");
 }
 
+@font-face {
+  font-family: "Montserrat-700";
+  src: local("Montserrat-Bold"), url(../fonts/Montserrat-Bold.ttf), format("truetype");
+}
+
+@font-face {
+  font-family: "Montserrat-600";
+  src: local("Montserrat-SemiBold"), url(../fonts/Montserrat-SemiBold.ttf), format("truetype");
+}
+
+@font-face {
+  font-family: "Montserrat-400";
+  src: local("Montserrat-Regular"), url(../fonts/Montserrat-Regular.ttf), format("truetype");
+}
+
 :root {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
