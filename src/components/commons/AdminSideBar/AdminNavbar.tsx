@@ -1,3 +1,4 @@
+import { Text } from '@/components/elements'
 import { adminNavbarRoutes } from '@/utils/constants'
 import { Children } from 'react'
 import { Link, useLocation } from 'react-router-dom'
@@ -18,7 +19,12 @@ export const AdminNavbar = () => {
 								to={path}
 							>
 								{icon && <span>{icon({ width: 20, height: 20 })}</span>}
-								<p>{text}</p>
+								<Text
+									variant={'secondary-regular'}
+									level={'h8'}
+								>
+									{text}
+								</Text>
 							</Link>
 						</li>
 					))

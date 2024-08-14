@@ -1,3 +1,5 @@
+import { Text } from '@/components/elements'
+
 export const AdminInfoPanel = () => {
 	return (
 		<div className=''>
@@ -6,8 +8,20 @@ export const AdminInfoPanel = () => {
 				alt='avatar'
 				className='max-w-[128px] rounded-full aspect-square object-cover'
 			/>
-			<p className='pt-5 pb-[10px] text-[17px] font-secondary-700 text-center'>Tien Luat</p>
-			<p className='text-sm font-secondary-400 text-center text-secondary'>Admin</p>
+			<Text
+				variant={'secondary-bold'}
+				level={'h6'}
+				className='pt-5 pb-[10px] text-center'
+			>
+				Tien Luat
+			</Text>
+			<Text
+				variant={'secondary-regular'}
+				level={'h8'}
+				className='text-secondary text-center'
+			>
+				Admin
+			</Text>
 		</div>
 	)
 }
