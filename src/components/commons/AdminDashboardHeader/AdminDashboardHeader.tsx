@@ -1,7 +1,7 @@
 import { NotificationIcon } from '@/assets/icons/outlined'
 import { ChangeEvent, useState } from 'react'
 
-export const AdminSideBarHeader = () => {
+export const AdminDashboardHeader = () => {
 	const [searchText, setSearchText] = useState<string>('')
 
 	const handleSearchTextChange = (e: ChangeEvent<HTMLInputElement>) => {

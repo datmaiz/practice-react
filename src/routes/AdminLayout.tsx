@@ -1,5 +1,5 @@
 import { AdminSidebar } from '@/components/commons'
-import { AdminSideBarHeader } from '@/components/commons/AdminSideBarHeader/AdminSideBarHeader'
+import { AdminDashboardHeader } from '@/components/commons/AdminDashboardHeader/AdminDashboardHeader'
 import { FC } from 'react'
 import { Outlet } from 'react-router-dom'
 
@@ -10,7 +10,7 @@ const AdminLayout: FC = () => {
 				<AdminSidebar />
 			</aside>
 			<div className='flex-1 px-[30px]'>
-				<AdminSideBarHeader />
+				<AdminDashboardHeader />
 				<main className='pt-[30px]'>
 					<Outlet />
 				</main>
