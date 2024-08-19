@@ -1,30 +1,15 @@
 import { RouteProps } from 'react-router-dom'
 
-import DashboardPage from '@/pages/Dashboard'
-import UserManagermentPage from '@/pages/UserManagement'
-import ProductManageremntPage from '@/pages/ProductManagerment'
-import OrderManagermentPage from '@/pages/OrderManagerment'
-import SettingPage from '@/pages/Setting'
+import LoginPage from '@/pages/Login/Login'
+import RegisterPage from '@/pages/Register/Register'
 
-export const adminLayouts: RouteProps[] = [
+export const authRoutes: RouteProps[] = [
 	{
-		path: '',
-		element: <DashboardPage />,
+		path: 'login',
+		element: <LoginPage />,
 	},
 	{
-		path: 'users',
-		element: <UserManagermentPage />,
-	},
-	{
-		path: 'products',
-		element: <ProductManageremntPage />,
-	},
-	{
-		path: 'orders',
-		element: <OrderManagermentPage />,
-	},
-	{
-		path: 'settings',
-		element: <SettingPage />,
+		path: 'register',
+		element: <RegisterPage />,
 	},
 ]
