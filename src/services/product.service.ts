@@ -1,6 +1,6 @@
 import { IErrorResponse, IProduct, ISuccessResponse } from '@/common/interfaces'
 import { axiosClient } from '@/utils/axiosClient'
-import { uploadImage } from '.'
+import { uploadImages } from '.'
 import { randomId } from '@/utils'
 
 export const getProducts = async (): Promise<ISuccessResponse<IProduct[]> | IErrorResponse<string>> => {
@@ -44,13 +44,8 @@ export const createProduct = async (
 	files: File[]
 ): Promise<ISuccessResponse<IProduct> | IErrorResponse<string>> => {
 	try {
-		const responses = await Promise.allSettled(files.map(file => uploadImage(file)))
-		const imageUrls: string[] = []
-		responses.forEach(response => {
-			if (response.status === 'fulfilled') {
-				imageUrls.push(response.value.secure_url)
-			}
-		})
+		const uploads = await uploadImages(files)
+		const imageUrls = uploads.map(upload => upload.secure_url)
 		const response = await axiosClient.post('/products', { ...product, images: imageUrls, id: randomId() })
 		return {
 			message: 'Create product successfully',
@@ -64,10 +59,16 @@ export const createProduct = async (
 }
 
 export const updateProduct = async (
-	product: IProduct
+	product: IProduct,
+	files: File[]
 ): Promise<ISuccessResponse<IProduct> | IErrorResponse<string>> => {
 	try {
-		const repsonse = await axiosClient.patch<IProduct>('/products', product)
+		const uploads = await uploadImages(files)
+		const imageUrls = uploads.map(upload => upload.secure_url)
+		const repsonse = await axiosClient.patch<IProduct>(`/products/${product.id}`, {
+			...product,
+			images: [...product.images, ...imageUrls],
+		})
 		return {
 			message: 'Update product successfully',
 			data: repsonse.data,
