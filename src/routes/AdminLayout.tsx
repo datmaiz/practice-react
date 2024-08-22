@@ -1,7 +1,7 @@
-import { AdminSidebar } from '@/components/commons'
-import { AdminDashboardHeader } from '@/components/commons/AdminDashboardHeader/AdminDashboardHeader'
 import { FC } from 'react'
 import { Outlet } from 'react-router-dom'
+
+import { AdminDashboardHeader, AdminSidebar } from '@/components/commons'
 
 const AdminLayout: FC = () => {
 	return (
@@ -9,9 +9,11 @@ const AdminLayout: FC = () => {
 			<aside className='bg-white-linen-100 max-w-[270px] w-full px-[25px] py-[18px]'>
 				<AdminSidebar />
 			</aside>
-			<div className='flex-1 px-[30px]'>
-				<AdminDashboardHeader />
-				<main className='pt-[30px]'>
+			<div className='flex flex-1 flex-col bg-[#f8f8f8] h-dvh'>
+				<div className='bg-white px-[30px]'>
+					<AdminDashboardHeader />
+				</div>
+				<main className='px-[30px] flex-1 overflow-auto'>
 					<Outlet />
 				</main>
 			</div>

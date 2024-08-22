@@ -1,1 +1,5 @@
 export * from './Text/Text'
+export * from './Table/AutomaticTable'
+export * from './Input/Input'
+export * from './Button/Button'
+export * from './Image/Image'
