@@ -1,1 +1,5 @@
 export * from './INavigation'
+export * from './ITable'
+export * from './IProduct'
+export * from './IApi'
+export * from './IUpload'
