@@ -9,9 +9,11 @@ import { ImagePreview } from './ImagePreview'
 import { createProduct } from '@/services'
 import { toast } from 'react-toastify'
 import { useClickOutside } from '@/hooks'
+import { IProduct } from '@/common/interfaces'
 
 interface AddProductModalProps {
 	onClose: () => void
+	addProduct: (product: IProduct) => void
 }
 
 const schema = z.object({
@@ -23,12 +25,12 @@ const schema = z.object({
 })
 
 type DataForm = z.infer<typeof schema>
-type TImagePreview = {
+export type TImagePreview = {
 	files: File[]
 	urls: string[]
 }
 
-export const AddProductModal: FC<AddProductModalProps> = ({ onClose }) => {
+export const AddProductModal: FC<AddProductModalProps> = ({ onClose, addProduct }) => {
 	const {
 		register,
 		handleSubmit,
@@ -38,21 +40,20 @@ export const AddProductModal: FC<AddProductModalProps> = ({ onClose }) => {
 	const ref = useRef(null)
 
 	const onSubmit = async (data: DataForm) => {
-		const response = await createProduct(
-			{
-				name: data.name,
-				price: data.price,
-				descriptions: data.descriptions,
-				sizes: [data.size],
-				colors: [data.color],
-				images: [],
-				publishedAt: Date.now(),
-			},
-			imagePreview.files
-		)
+		const newProduct = {
+			name: data.name,
+			price: data.price,
+			descriptions: data.descriptions,
+			sizes: [data.size],
+			colors: [data.color],
+			images: [],
+			publishedAt: Date.now(),
+		}
+		const response = await createProduct(newProduct, imagePreview.files)
 
 		if ('data' in response) {
 			toast.success(response.message)
+			addProduct(response.data)
 		} else {
 			toast.error(response.error)
 		}
@@ -61,8 +62,8 @@ export const AddProductModal: FC<AddProductModalProps> = ({ onClose }) => {
 
 	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const filesList = e.target.files
-		const files: File[] = [...imagePreview.files]
-		const urls: string[] = [...imagePreview.urls]
+		const files = [...imagePreview.files]
+		const urls = [...imagePreview.urls]
 		if (filesList) {
 			for (const f of filesList) {
 				const previewImage = URL.createObjectURL(f)
