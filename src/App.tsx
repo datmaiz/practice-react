@@ -3,8 +3,10 @@ import { Children } from 'react'
 
 import './__global.css'
 import AdminLayout from './routes/AdminLayout'
-import { adminLayouts, authRoutes } from './routes/layouts'
+import { adminLayouts, authRoutes, clientRoutes } from './routes/layouts'
 import { AuthLayout } from './routes'
+import { ClientLayout } from './routes/ClientLayout'
+import NotFoundPage from './pages/NotFound'
 
 function App() {
 	return (
@@ -15,7 +17,7 @@ function App() {
 						path='/admin'
 						element={<AdminLayout />}
 					>
-						{Children.toArray(adminLayouts.map(layout => <Route {...layout} />))}
+						{Children.toArray(adminLayouts.map(route => <Route {...route} />))}
 					</Route>
 					<Route
 						path='/auth'
@@ -23,6 +25,16 @@ function App() {
 					>
 						{Children.toArray(authRoutes.map(route => <Route {...route} />))}
 					</Route>
+					<Route
+						path=''
+						element={<ClientLayout />}
+					>
+						{Children.toArray(clientRoutes.map(route => <Route {...route} />))}
+					</Route>
+					<Route
+						path='*'
+						element={<NotFoundPage />}
+					/>
 				</Routes>
 			</BrowserRouter>
 		</div>
