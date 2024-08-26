@@ -1,3 +1,5 @@
+import AddIcon from './add.svg?react'
 import LocationIcon from './location.svg?react'
+import MinusIcon from './minus.svg?react'
 
-export { LocationIcon }
+export { AddIcon, LocationIcon, MinusIcon }
