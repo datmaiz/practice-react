@@ -21,7 +21,7 @@ export const getProductById = async (
 	productId: string
 ): Promise<ISuccessResponse<IProduct> | IErrorResponse<string>> => {
 	try {
-		const response = await axiosClient.get<IProduct[]>('/products', { params: { id: productId } })
+		const response = await axiosClient.get<IProduct[]>('/products', { params: { productId } })
 		if (!response.data.length) {
 			return {
 				error: 'Product is not exist',
@@ -65,7 +65,7 @@ export const updateProduct = async (
 	try {
 		const uploads = await uploadImages(files)
 		const imageUrls = uploads.map(upload => upload.secure_url)
-		const repsonse = await axiosClient.patch<IProduct>(`/products/${product.id}`, {
+		const repsonse = await axiosClient.patch<IProduct>(`/products/${product.productId}`, {
 			...product,
 			images: [...product.images, ...imageUrls],
 		})
