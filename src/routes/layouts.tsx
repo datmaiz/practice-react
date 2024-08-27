@@ -4,10 +4,14 @@ import DashboardPage from '@/pages/Dashboard'
 import LoginPage from '@/pages/Login/Login'
 import OrderManagermentPage from '@/pages/OrderManagerment'
 import ProductManageremntPage from '@/pages/ProductManagerment'
-import RegisterPage from '@/pages/Register/Register'
+import RegisterPage from '@/pages/Register'
 import SettingPage from '@/pages/Setting'
 import UserManagermentPage from '@/pages/UserManagement'
-import EditProductPage from '@/pages/EditProduct/EditProductPage'
+import EditProductPage from '@/pages/EditProduct'
+import HomePage from '@/pages/Home'
+import ProductDetailsPage from '@/pages/ProductDetails'
+import BagPage from '@/pages/Bag/BagPage'
+import ClientOrderPage from '@/pages/ClientOrder/ClientOrderPage'
 
 export const adminLayouts: RouteProps[] = [
 	{
@@ -45,4 +49,20 @@ export const authRoutes: RouteProps[] = [
 		path: 'register',
 		element: <RegisterPage />,
 	},
+]
+
+export const clientRoutes: RouteProps[] = [
+	{
+		path: '',
+		element: <HomePage />,
+	},
+	{
+		path: 'products/:productId',
+		element: <ProductDetailsPage />,
+	},
+	{
+		path: 'bags',
+		element: <BagPage />,
+	},
+	{ path: 'orders', element: <ClientOrderPage /> },
 ]

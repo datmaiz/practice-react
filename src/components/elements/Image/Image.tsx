@@ -11,7 +11,7 @@ export const Image: FC<ImageProps> = ({ containerClassName, className, shape, ..
 	return (
 		<figure className={cn(imageVariants({ shape }), 'overflow-hidden', containerClassName)}>
 			<img
-				className={cn('w-full h-full object-cover')}
+				className={cn('w-full h-full object-cover', className)}
 				{...others}
 			/>
 		</figure>
