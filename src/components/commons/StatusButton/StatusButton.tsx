@@ -8,17 +8,17 @@ interface StatusButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	children: ReactNode
 }
 
-export const StatusButton: FC<StatusButtonProps> = ({ status, className, children }) => {
+export const StatusButton: FC<StatusButtonProps> = ({ status, className, children, ...others }) => {
 	const statusColor = status === 'waiting' ? 'text-gray-600' : status === 'rejected' ? 'text-red-500' : 'text-green-500'
 
 	return (
 		<button
-			disabled
 			type='button'
 			className={cn(
 				`uppercase px-6 py-4 ${statusColor} border border-current relative before:absolute before:inset-0 before:bg-current before:-z-[2] before:opacity-30`,
 				className
 			)}
+			{...others}
 		>
 			{children}
 		</button>
