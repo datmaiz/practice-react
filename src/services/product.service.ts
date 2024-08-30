@@ -46,7 +46,12 @@ export const createProduct = async (
 	try {
 		const uploads = await uploadImages(files)
 		const imageUrls = uploads.map(upload => upload.secure_url)
-		const response = await axiosClient.post('/products', { ...product, images: imageUrls, id: randomId() })
+		const response = await axiosClient.post('/products', {
+			...product,
+			images: imageUrls,
+			id: randomId(),
+			productId: randomId(),
+		})
 		return {
 			message: 'Create product successfully',
 			data: response.data,
