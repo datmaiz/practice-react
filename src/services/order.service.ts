@@ -30,7 +30,6 @@ export const getOrdersWithAllUsers = async (): Promise<
 			...order,
 			user: users.find(each => each.id === order.userId)!,
 		}))
-		console.log(data)
 		return {
 			message: '',
 			data,
@@ -49,6 +48,23 @@ export const getOrdersByUserId = async (
 		const response = await axiosClient.get<IOrder[]>('/orders', { params: { userId } })
 		return {
 			message: 'Ordered successfully',
+			data: response.data,
+		}
+	} catch (error) {
+		return {
+			error: error instanceof Error ? error.message : String(error),
+		}
+	}
+}
+
+export const changeStatus = async (
+	orderId: string,
+	status: IOrder['status']
+): Promise<ISuccessResponse<IOrder> | IErrorResponse<string>> => {
+	try {
+		const response = await axiosClient.patch<IOrder>(`/orders/${orderId}`, { status })
+		return {
+			message: 'Changed status successfully',
 			data: response.data,
 		}
 	} catch (error) {
