@@ -1,36 +1,16 @@
-import { IBreadcrumb, IOrder } from '@/common/interfaces'
-import { Breadcrumb, ClientContainer, Slider } from '@/components/commons'
+import { IBreadcrumb } from '@/common/interfaces'
+import { Breadcrumb, ClientContainer, Loader, Slider } from '@/components/commons'
 import { Text } from '@/components/elements'
-import { deleteOrderById, getOrdersByUserId } from '@/services'
-import { useEffect, useState } from 'react'
 import { OrdersList } from './OrdersList'
-import { toast } from 'react-toastify'
+import { useAuth, useGetOrdersWithUserByUserId } from '@/hooks'
 
 const ClientOrderPage = () => {
-	const [orders, setOrders] = useState<IOrder[]>([])
+	const { auth } = useAuth()
+	const { isLoading } = useGetOrdersWithUserByUserId(auth!.id)
 	const breadcrumbs: IBreadcrumb[] = [
 		{ path: '/', title: 'homepage' },
 		{ path: '/orders', title: 'all orders' },
 	]
-
-	const handleCancelOrder = async (orderId: string) => {
-		const response = await deleteOrderById(orderId)
-		if ('data' in response) {
-			toast.success(response.message)
-			setOrders(orders.filter(order => order.id !== orderId))
-		} else {
-			toast.error(response.error)
-		}
-	}
-
-	useEffect(() => {
-		;(async () => {
-			const response = await getOrdersByUserId('12ddqwqh')
-			if ('data' in response) {
-				setOrders(response.data)
-			}
-		})()
-	}, [])
 
 	return (
 		<ClientContainer>
@@ -44,20 +24,13 @@ const ClientOrderPage = () => {
 				ALL ORDERS
 			</Text>
 			<section className='flex justify-between gap-[62px] *:flex-1'>
-				{orders.length > 0 ? (
-					<OrdersList
-						onCancelOrder={handleCancelOrder}
-						orders={orders}
-					/>
+				{isLoading ? (
+					<div className='flex-center h-20 text-primary'>
+						<Loader size={'2xl'} />
+					</div>
 				) : (
-					<Text
-						level={'h5'}
-						className='text-center'
-					>
-						Have no order
-					</Text>
+					<OrdersList />
 				)}
-				{/* <BagOrderPanel /> */}
 			</section>
 			<section className='py-[120px]'>
 				<Text

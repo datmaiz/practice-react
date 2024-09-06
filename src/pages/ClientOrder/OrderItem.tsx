@@ -1,15 +1,21 @@
-import { IOrder } from '@/common/interfaces'
+import { IOrderResponseWithUser } from '@/common/interfaces'
 import { StatusButton } from '@/components/commons'
 import { Button, Image, Text } from '@/components/elements'
+import { useDeleteOrderMutation } from '@/hooks'
 import { numberToCurrency } from '@/utils'
 import { FC } from 'react'
 
 interface OrderItemProps {
-	order: IOrder
-	onCancelOrder: (orderId: string) => void
+	order: IOrderResponseWithUser
 }
 
-export const OrderItem: FC<OrderItemProps> = ({ order, onCancelOrder }) => {
+export const OrderItem: FC<OrderItemProps> = ({ order }) => {
+	const mutation = useDeleteOrderMutation()
+
+	const handleCancelOrder = () => {
+		mutation.mutate(order.id)
+	}
+
 	return (
 		<div className='flex gap-5 p-4 border rounded-lg'>
 			<Image
@@ -99,8 +105,9 @@ export const OrderItem: FC<OrderItemProps> = ({ order, onCancelOrder }) => {
 					<div className='flex-ver gap-4'>
 						<Button
 							disabled={order.status !== 'waiting'}
-							onClick={() => onCancelOrder(order.id)}
+							onClick={handleCancelOrder}
 							className={`px-6 py-4 ${order.status !== 'waiting' ? 'bg-gray-500' : ''}`}
+							loading={mutation.isPending}
 						>
 							Cancel
 						</Button>

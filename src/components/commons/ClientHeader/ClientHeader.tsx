@@ -1,27 +1,25 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 
 import { Text } from '@/components/elements'
 import { ClientContainer } from '..'
-import { BagIcon, GlassIcon, HeartIcon, MenuIcon, PersonIcon } from '@/assets/icons/outlined'
+import { BagIcon, GlassIcon, LogoutIcon, MenuIcon, PersonIcon } from '@/assets/icons/outlined'
 import { Badge } from '../Badge/Badge'
 import { ClientNavbar } from '../ClientNavbar/ClientNavbar'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getBagsByUserId } from '@/services/bag.service'
+import { useAuth } from '@/hooks'
+import { useGetBagsByUserId } from '@/hooks/useGetBags'
 
 export const ClientHeader = () => {
 	const [isNavOpened, setIsNavOpened] = useState<boolean>(false)
-	const [bagsCount, setBagsCount] = useState(0)
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
+	const { auth, deleteInfo } = useAuth()
+	const { data: bags } = useGetBagsByUserId(auth!.id)
 
-	useEffect(() => {
-		;(async () => {
-			const response = await getBagsByUserId('12ddqwqh')
-			if ('data' in response) {
-				setBagsCount(response.data.length)
-			}
-		})()
-	}, [])
+	const handleLogout = () => {
+		navigate('/auth/login')
+		deleteInfo()
+	}
 
 	useLayoutEffect(() => {
 		setIsNavOpened(false)
@@ -47,17 +45,18 @@ export const ClientHeader = () => {
 							width={27}
 							height={27}
 						/>
-						<Badge countNumber={bagsCount}>
+						<Badge countNumber={bags?.length ?? 0}>
 							<BagIcon
 								width={27}
 								height={27}
 								onClick={() => navigate('/bags')}
 							/>
 						</Badge>
-						<HeartIcon
+						<LogoutIcon
 							width={27}
 							height={27}
 							className='hidden sm:block'
+							onClick={handleLogout}
 						/>
 						<MenuIcon
 							width={27}
