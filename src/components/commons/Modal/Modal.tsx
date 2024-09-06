@@ -1,4 +1,4 @@
-import { FC, ReactNode, memo } from 'react'
+import { FC, MouseEvent, ReactNode, memo } from 'react'
 
 interface ModalProps {
 	children: ReactNode
@@ -7,5 +7,16 @@ interface ModalProps {
 }
 
 export const Modal: FC<ModalProps> = memo(({ children }) => {
-	return <div className='fixed inset-0 backdrop-blur-[10px] flex-center'>{children}</div>
+	const handleClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+		if (e.target === e.currentTarget) close()
+	}
+
+	return (
+		<div
+			onClick={handleClick}
+			className='fixed inset-0 backdrop-blur-[10px] flex-center'
+		>
+			{children}
+		</div>
+	)
 })

@@ -12,7 +12,7 @@ export const Radio: FC<RadioProps> = ({ title, content, ...others }) => {
 	return (
 		<label
 			htmlFor={radioId}
-			className='has-[input:checked]:border-blue-500 border border-transparent rounded-lg px-4 py-2 block cursor-pointer duration-300 w-[100px] shadow-lg'
+			className='has-[input:checked]:border-blue-500 border border-transparent rounded-lg px-4 py-2 block cursor-pointer duration-300 min-w-[100px] shadow-lg'
 		>
 			<Text
 				level={'h8'}
