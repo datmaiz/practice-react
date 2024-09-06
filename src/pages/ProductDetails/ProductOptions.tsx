@@ -6,7 +6,7 @@ import { numberToCurrency } from '@/utils'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { Radio } from '@/components/elements/Radio/Radio'
 import { AddIcon, MinusIcon } from '@/assets/icons/filled'
-import { createBag } from '@/services/bag.service'
+import { useAddBagMutation, useAuth } from '@/hooks'
 import { toast } from 'react-toastify'
 
 interface ProductOptionsProps {
@@ -19,6 +19,9 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 	const [searchParams, setSearchParams] = useSearchParams()
 	const [option, setOption] = useState<OrderOption>('sizes')
 	const [quantity, setQuantity] = useState(1)
+	const { auth } = useAuth()
+
+	const addBagMutation = useAddBagMutation()
 
 	const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
 		setOption(e.target.value as OrderOption)
@@ -42,10 +45,10 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 		setQuantity(quantity === 1 ? 1 : quantity - 1)
 	}
 
-	const handleOrder = async () => {
+	const handleAddToBag = async () => {
 		const newBag: IBagRequest = {
 			productId: product.productId,
-			userId: '12ddqwqh',
+			userId: auth!.id,
 			color: searchParams.get('colors')!,
 			size: searchParams.get('sizes')!,
 			descriptions: product.descriptions,
@@ -54,13 +57,10 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 			thumb: product.images[0],
 			quantity,
 		}
-		const response = await createBag(newBag)
-
-		if ('data' in response) {
-			toast.success(response.message)
-		} else {
-			toast.error(response.error)
-		}
+		addBagMutation.mutate(newBag, {
+			onSuccess: () => toast.success('Add to bag successfully'),
+			onError: err => toast.error(err.message),
+		})
 	}
 
 	useEffect(() => {
@@ -132,7 +132,8 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 			</div>
 			<div className='pt-3'>
 				<Button
-					onClick={handleOrder}
+					onClick={handleAddToBag}
+					loading={addBagMutation.isPending}
 					className='w-full bg-black-600 select-none'
 				>
 					add to bag
