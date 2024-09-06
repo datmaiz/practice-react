@@ -1,17 +1,29 @@
 import { FC } from 'react'
 
+import { CloseIcon } from '@/assets/icons/outlined'
 import { IBag } from '@/common/interfaces'
 import { Button, Image, Text } from '@/components/elements'
+import { useAddOrderMutaion, useAuth, useDeleteBagMutation } from '@/hooks'
 import { numberToCurrency } from '@/utils'
-import { CloseIcon } from '@/assets/icons/outlined'
 
 interface BagItemProps {
 	bag: IBag
-	onOrder: (bag: IBag) => void
-	onDelete: (bagId: string) => void
 }
 
-export const BagItem: FC<BagItemProps> = ({ bag, onOrder, onDelete }) => {
+export const BagItem: FC<BagItemProps> = ({ bag }) => {
+	const { auth } = useAuth()
+	const deleteBagMutation = useDeleteBagMutation()
+	const addOrderMutation = useAddOrderMutaion()
+
+	const handleDeleteBag = () => {
+		deleteBagMutation.mutate(bag.id)
+	}
+
+	const handleOrder = () => {
+		addOrderMutation.mutate({ ...bag, status: 'waiting', userId: auth!.id, orderedAt: Date.now() })
+		handleDeleteBag()
+	}
+
 	return (
 		<div className='flex gap-5 p-4 border rounded-lg'>
 			<Image
@@ -39,7 +51,7 @@ export const BagItem: FC<BagItemProps> = ({ bag, onOrder, onDelete }) => {
 					<CloseIcon
 						width={16}
 						height={16}
-						onClick={() => onDelete(bag.id)}
+						onClick={handleDeleteBag}
 						className='cursor-pointer'
 					/>
 				</div>
@@ -107,7 +119,8 @@ export const BagItem: FC<BagItemProps> = ({ bag, onOrder, onDelete }) => {
 						</div>
 					</div>
 					<Button
-						onClick={() => onOrder(bag)}
+						onClick={handleOrder}
+						loading={addOrderMutation.isPending || deleteBagMutation.isPending}
 						className='px-6 py-4'
 					>
 						Order
