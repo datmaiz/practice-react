@@ -1,36 +1,35 @@
-import { useEffect, useState } from 'react'
 import { BedsheetBanner, SaleBanner } from './Banner'
 import { ProductIntroduce } from './ProductIntroduce'
 import { Services } from './Service'
 import { Subscribe } from './Subscribe'
-import { IProduct } from '@/common/interfaces'
-import { getProducts } from '@/services'
-import { toast } from 'react-toastify'
 import { IntroductionProducts } from './IntroductionProducts'
 import { TopRatingProducts } from './TopRatingProducts'
+import { useGetProducts } from '@/hooks/useGetProducts'
+import { Loader } from '@/components/commons'
 
 const HomePage = () => {
-	const [products, setProducts] = useState<IProduct[]>([])
-
-	useEffect(() => {
-		;(async () => {
-			const response = await getProducts()
-			if ('data' in response) {
-				setProducts(response.data)
-			} else {
-				toast.error('Can not get data')
-			}
-		})()
-	}, [])
+	const { data: products, isLoading } = useGetProducts()
 
 	return (
 		<div>
 			<Services />
 			<SaleBanner />
 			<ProductIntroduce />
-			<IntroductionProducts products={products} />
+			{isLoading ? (
+				<div className='h-20 w-full flex-center text-primary'>
+					<Loader size={'3xl'} />
+				</div>
+			) : (
+				<IntroductionProducts products={products ?? []} />
+			)}
 			<BedsheetBanner />
-			<TopRatingProducts products={products} />
+			{isLoading ? (
+				<div className='h-20 w-full flex-center text-primary'>
+					<Loader size={'3xl'} />
+				</div>
+			) : (
+				<TopRatingProducts products={products ?? []} />
+			)}
 			<Subscribe />
 		</div>
 	)
