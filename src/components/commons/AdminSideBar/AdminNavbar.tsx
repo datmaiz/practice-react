@@ -1,4 +1,5 @@
 import { Text } from '@/components/elements'
+import { isActiveLink } from '@/utils'
 import { adminNavbarRoutes } from '@/utils/constants'
 import { Children } from 'react'
 import { Link, useLocation } from 'react-router-dom'
@@ -13,8 +14,8 @@ export const AdminNavbar = () => {
 					adminNavbarRoutes.map(({ path, text, icon }) => (
 						<li>
 							<Link
-								className={`flex-ver gap-4 px-10 py-3 rounded-[4px] hover:bg-secondary hover:opacity-70 duration-300 ${
-									pathname === path ? 'bg-secondary' : ''
+								className={`flex-ver gap-4 px-3 py-1 md:px-5 md:py-2 xl:px-10 xl:py-3 rounded-[4px] hover:bg-secondary hover:opacity-70 duration-300 ${
+									isActiveLink(path, pathname, '/admin') ? 'bg-secondary' : ''
 								}`}
 								to={path}
 							>
@@ -22,6 +23,7 @@ export const AdminNavbar = () => {
 								<Text
 									variant={'secondary-regular'}
 									level={'h8'}
+									className='hidden md:block'
 								>
 									{text}
 								</Text>
