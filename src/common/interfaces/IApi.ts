@@ -3,6 +3,6 @@ export interface ISuccessResponse<T> {
 	data: T
 }
 
-export interface IErrorResponse<T> {
+export interface IErrorResponse<T = string> {
 	error: T
 }
