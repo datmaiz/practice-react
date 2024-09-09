@@ -76,6 +76,7 @@ const RegisterPage = () => {
 					label='Password'
 					error={errors.password?.message}
 					register={register('password')}
+					type='password'
 				/>
 				<Input
 					variant={'primary'}
@@ -83,6 +84,7 @@ const RegisterPage = () => {
 					label='Confirm'
 					error={errors.confirm?.message}
 					register={register('confirm')}
+					type='password'
 				/>
 				<Button loading={isSubmitting}>register</Button>
 				<Link

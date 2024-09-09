@@ -1,22 +1,28 @@
-import { IOrder } from '@/common/interfaces'
-import { FC } from 'react'
+import { Text } from '@/components/elements'
 import { OrderItem } from './OrderItem'
+import { useAuth, useGetOrdersWithUserByUserId } from '@/hooks'
 
-interface OrdersListProps {
-	orders: IOrder[]
-	onCancelOrder: (orderId: string) => void
-}
+export const OrdersList = () => {
+	const { auth } = useAuth()
+	const { data: orders = [] } = useGetOrdersWithUserByUserId(auth!.id)
 
-export const OrdersList: FC<OrdersListProps> = ({ orders, onCancelOrder }) => {
 	return (
 		<div>
-			{orders.map(order => (
-				<OrderItem
-					key={order.id}
-					onCancelOrder={onCancelOrder}
-					order={order}
-				/>
-			))}
+			{orders.length > 0 ? (
+				orders.map(order => (
+					<OrderItem
+						key={order.id}
+						order={order}
+					/>
+				))
+			) : (
+				<Text
+					level={'h5'}
+					className='text-center'
+				>
+					Have no order
+				</Text>
+			)}
 		</div>
 	)
 }

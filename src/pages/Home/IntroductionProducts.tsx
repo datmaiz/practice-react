@@ -13,7 +13,7 @@ export const IntroductionProducts: FC<IntroductionProductProps> = ({ products })
 				{products.map(product => (
 					<ProductCard
 						key={product.productId}
-						isColorsShown={true}
+						isColorsShown={false}
 						product={product}
 					/>
 				))}

@@ -1,11 +1,10 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@/assets/icons/outlined'
-import { IProduct } from '@/common/interfaces'
-import { FC, useEffect, useRef, useState } from 'react'
-import { ProductCard } from '..'
-import { getProducts } from '@/services'
+import { FC, useRef } from 'react'
+import { Loader, ProductCard } from '..'
+import { useGetProducts } from '@/hooks/useGetProducts'
 
 export const Slider: FC = () => {
-	const [products, setProducts] = useState<IProduct[]>([])
+	const { data: products, isLoading } = useGetProducts()
 	const ref = useRef<HTMLDivElement>(null)
 
 	const scrollLeft = () => {
@@ -22,15 +21,6 @@ export const Slider: FC = () => {
 		})
 	}
 
-	useEffect(() => {
-		;(async () => {
-			const response = await getProducts()
-			if ('data' in response) {
-				setProducts(response.data)
-			}
-		})()
-	}, [])
-
 	return (
 		<div className='relative'>
 			<ChevronLeftIcon
@@ -42,7 +32,7 @@ export const Slider: FC = () => {
 				ref={ref}
 				className='flex gap-6 overflow-x-auto overflow-y-hidden snap-x'
 			>
-				{products.map(product => (
+				{products?.map(product => (
 					<ProductCard
 						key={product.productId}
 						product={product}
@@ -50,6 +40,11 @@ export const Slider: FC = () => {
 						custom='shrink-0 basis-[100px] md:basis-[200px] snap-start'
 					/>
 				))}
+				{isLoading && (
+					<div className='justify-self-center flex-center w-full text-primary'>
+						<Loader size={'2xl'} />
+					</div>
+				)}
 			</div>
 			<ChevronRightIcon
 				onClick={scrollRight}

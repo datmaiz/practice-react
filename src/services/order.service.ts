@@ -1,91 +1,57 @@
-import { IErrorResponse, IOrder, IOrderRequest, ISuccessResponse, IUserResponse } from '@/common/interfaces'
+import { IOrder, IOrderRequest, IUserResponse } from '@/common/interfaces'
 import { axiosClient, randomId } from '@/utils'
 import { IOrderResponseWithUser } from '../common/interfaces/IOrder'
 
-export const createOrder = async (
-	order: IOrderRequest
-): Promise<ISuccessResponse<IOrderRequest> | IErrorResponse<string>> => {
-	try {
-		const response = await axiosClient.post<IOrder>('/orders', { ...order, id: randomId() })
-		return {
-			message: 'Ordered successfully',
-			data: response.data,
-		}
-	} catch (error) {
-		return {
-			error: error instanceof Error ? error.message : String(error),
-		}
-	}
+export const createOrder = async (order: IOrderRequest) => {
+	return (await axiosClient.post<IOrder>('/orders', { ...order, id: randomId() })).data
 }
 
-export const getOrdersWithAllUsers = async (): Promise<
-	ISuccessResponse<IOrderResponseWithUser[]> | IErrorResponse<string>
-> => {
-	try {
-		const ordersResponse = await axiosClient.get<IOrder[]>('/orders')
-		const usersResponse = await axiosClient.get<IUserResponse[]>('/users', { params: { role: 'user' } })
-		const orders = ordersResponse.data
-		const users = usersResponse.data
-		const data: IOrderResponseWithUser[] = orders.map(order => ({
-			...order,
-			user: users.find(each => each.id === order.userId)!,
-		}))
-		return {
-			message: '',
-			data,
-		}
-	} catch (error) {
-		return {
-			error: error instanceof Error ? error.message : String(error),
-		}
-	}
+export const getOrdersWithAllUsers = async () => {
+	const [ordersResponse, usersResponse] = await Promise.all([
+		await axiosClient.get<IOrder[]>('/orders'),
+		await axiosClient.get<IUserResponse[]>('/users', { params: { role: 'user' } }),
+	])
+
+	const orders = ordersResponse.data
+	const users = usersResponse.data
+
+	const data: IOrderResponseWithUser[] = orders.map(order => ({
+		...order,
+		user: users.find(user => user.id === order.userId)!,
+	}))
+
+	return data
 }
 
-export const getOrdersByUserId = async (
-	userId: string
-): Promise<ISuccessResponse<IOrder[]> | IErrorResponse<string>> => {
-	try {
-		const response = await axiosClient.get<IOrder[]>('/orders', { params: { userId } })
-		return {
-			message: 'Ordered successfully',
-			data: response.data,
-		}
-	} catch (error) {
-		return {
-			error: error instanceof Error ? error.message : String(error),
-		}
-	}
+export const getOrdersWithAllUsersByUserId = async (userId: string) => {
+	const [ordersResponse, usersResponse] = await Promise.all([
+		await axiosClient.get<IOrder[]>('/orders', { params: { userId } }),
+		await axiosClient.get<IUserResponse[]>('/users', { params: { role: 'user', userId } }),
+	])
+
+	const orders = ordersResponse.data
+	const users = usersResponse.data
+
+	const data: IOrderResponseWithUser[] = orders.map(order => ({
+		...order,
+		user: users.find(user => user.id === order.userId)!,
+	}))
+
+	return data
 }
 
-export const changeStatus = async (
-	orderId: string,
-	status: IOrder['status']
-): Promise<ISuccessResponse<IOrder> | IErrorResponse<string>> => {
-	try {
-		const response = await axiosClient.patch<IOrder>(`/orders/${orderId}`, { status })
-		return {
-			message: 'Changed status successfully',
-			data: response.data,
-		}
-	} catch (error) {
-		return {
-			error: error instanceof Error ? error.message : String(error),
-		}
-	}
+export const getAllOrders = async () => {
+	return (await axiosClient.get<IOrder[]>('/orders')).data
 }
 
-export const deleteOrderById = async (
-	orderId: string
-): Promise<ISuccessResponse<IOrder[]> | IErrorResponse<string>> => {
-	try {
-		const response = await axiosClient.delete<IOrder[]>(`/orders/${orderId}`)
-		return {
-			message: 'Delete order successfully',
-			data: response.data,
-		}
-	} catch (error) {
-		return {
-			error: error instanceof Error ? error.message : String(error),
-		}
-	}
+export const getOrdersByUserId = async (userId: string) => {
+	return (await axiosClient.get<IOrder[]>('/orders', { params: { userId } })).data
+}
+
+export const changeStatus = async (orderId: string, status: IOrder['status']) => {
+	return (await axiosClient.patch<IOrder>(`/orders/${orderId}`, { status })).data
+}
+
+export const deleteOrderById = async (orderId: string) => {
+	return (await axiosClient.delete<IOrder[]>(`/orders/${orderId}`)).data
 }

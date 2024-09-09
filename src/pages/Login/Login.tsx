@@ -1,4 +1,5 @@
 import { Button, Input, Text } from '@/components/elements'
+import { useLocalStorage } from '@/hooks'
 import { login } from '@/services'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -21,13 +22,18 @@ const LoginPage = () => {
 	} = useForm<DataLoginForm>({ resolver: zodResolver(schema) })
 	const navigate = useNavigate()
 	const [params] = useSearchParams()
+	const { set } = useLocalStorage('auth')
 
 	const handleSubmitForm = async (data: DataLoginForm) => {
 		const response = await login(data.email, data.password)
 		if ('data' in response) {
-			navigate('/admin')
+			const user = response.data
+			set(user)
+			navigate(user.role === 'admin' ? '/admin' : '/')
 		} else {
-			navigate(`/auth/login?emailError=${response.error.email}&passwordError=${response.error.password}`)
+			navigate(`/auth/login?emailError=${response.error.email}&passwordError=${response.error.password}`, {
+				replace: true,
+			})
 			response.error.notification && toast.error(response.error.notification)
 		}
 	}
