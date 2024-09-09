@@ -53,6 +53,14 @@ export const authRoutes: RouteProps[] = [
 
 export const clientRoutes: RouteProps[] = [
 	{
+		path: 'bags',
+		element: <BagPage />,
+	},
+	{ path: 'orders', element: <ClientOrderPage /> },
+]
+
+export const publicRoutes: RouteProps[] = [
+	{
 		path: '',
 		element: <HomePage />,
 	},
@@ -60,9 +68,4 @@ export const clientRoutes: RouteProps[] = [
 		path: 'products/:productId',
 		element: <ProductDetailsPage />,
 	},
-	{
-		path: 'bags',
-		element: <BagPage />,
-	},
-	{ path: 'orders', element: <ClientOrderPage /> },
 ]
