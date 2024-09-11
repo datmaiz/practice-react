@@ -1,17 +1,23 @@
-import { FC, memo, useEffect, useState } from 'react'
+import { FC, memo } from 'react'
 
 import { IOrder, IOrderResponseWithUser, ITableColumn } from '@/common/interfaces'
-import { StatusButton } from '@/components/commons'
-import { Pagination } from '@/components/commons/Pagination/Pagination'
+import { Pagination, StatusButton } from '@/components/commons'
 import { AutomaticTable, Image, Text } from '@/components/elements'
-import { changeStatus, getOrdersWithAllUsers } from '@/services'
-import { numberToDate } from '@/utils'
+import { useChangeStatusOrderMutation, useGetResourceWithPagination, usePagination } from '@/hooks'
+import { getOrdersWithAllUsersPerPage } from '@/services'
+import { numberToDate, queryKeys } from '@/utils'
 
-type OrderColumn = Pick<IOrderResponseWithUser, 'id' | 'orderedAt' | 'thumb' | 'status' | 'quantity' | 'name' | 'user'>
+type OrderColumn = Omit<IOrderResponseWithUser, 'color' | 'descriptions' | 'price' | 'productId' | 'size'>
 type Status = IOrder['status']
 
 export const OrderTable: FC = memo(() => {
-	const [orders, setOrders] = useState<IOrderResponseWithUser[]>([])
+	const { currentPage, nextPage, previousPage } = usePagination()
+	const { data: orders, isLoading } = useGetResourceWithPagination<IOrderResponseWithUser[]>({
+		requestFn: getOrdersWithAllUsersPerPage,
+		queryKey: [queryKeys.ORDERS_WITH_USERS_AND_PAGINATION, currentPage],
+		pagination: { _limit: 4, _page: currentPage },
+	})
+	const changeStatusOrderMutation = useChangeStatusOrderMutation(currentPage)
 
 	const columns: ITableColumn<OrderColumn>[] = [
 		{
@@ -46,7 +52,7 @@ export const OrderTable: FC = memo(() => {
 		{
 			title: 'Quantity',
 			key: 'quantity',
-			_style: { width: 150 },
+			_style: { width: 150, textAlign: 'center' },
 			_className: 'text-center h-[1lh]',
 			render: order => (
 				<Text
@@ -61,6 +67,7 @@ export const OrderTable: FC = memo(() => {
 		{
 			title: 'Status',
 			key: 'status',
+			_style: { textAlign: 'center' },
 			_className: 'text-center h-[1lh]',
 			render: order => (
 				<StatusButton
@@ -68,6 +75,7 @@ export const OrderTable: FC = memo(() => {
 					children={order.status}
 					onClick={() => handleChangeStatus(order.id, order.status)}
 					className='rounded-lg'
+					isLoading={changeStatusOrderMutation.isPending}
 				/>
 			),
 		},
@@ -90,37 +98,25 @@ export const OrderTable: FC = memo(() => {
 	const handleChangeStatus = async (orderId: string, currentStatus: Status) => {
 		const status: Status =
 			currentStatus === 'waiting' ? 'accepted' : currentStatus === 'accepted' ? 'rejected' : 'waiting'
-		const response = await changeStatus(orderId, status)
-		if ('data' in response) {
-			const updatedOrders = orders.map(order => ({
-				...order,
-				status: order.id === orderId ? status : order.status,
-			}))
-			setOrders(updatedOrders)
-		}
+		changeStatusOrderMutation.mutate({ orderId, status })
 	}
-
-	useEffect(() => {
-		;(async () => {
-			const response = await getOrdersWithAllUsers()
-			if ('data' in response) {
-				setOrders(response.data)
-			}
-		})()
-	}, [])
 
 	return (
 		<div className='relative overflow-x-auto table-fixed w-full max-w-full'>
 			<AutomaticTable
 				columns={columns}
-				rows={orders}
+				rows={orders?.data ?? []}
 				rowKey={'id'}
 				_rowClassName='bg-white font-secondary-400'
+				loadingRows={4}
+				isLoading={isLoading}
 			/>
 			<Pagination
-				total={20}
-				offset={1}
-				limit={4}
+				total={orders?.pagination?._totalRows ?? 1}
+				currentPage={currentPage}
+				limit={orders?.pagination?._limit ?? 10}
+				nextPage={nextPage}
+				previousPage={previousPage}
 			/>
 		</div>
 	)
