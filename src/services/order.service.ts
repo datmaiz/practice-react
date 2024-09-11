@@ -1,4 +1,4 @@
-import { IOrder, IOrderRequest, IUserResponse } from '@/common/interfaces'
+import { IOrder, IOrderRequest, IPagination, IUserResponse } from '@/common/interfaces'
 import { axiosClient, randomId } from '@/utils'
 import { IOrderResponseWithUser } from '../common/interfaces/IOrder'
 
@@ -21,6 +21,33 @@ export const getOrdersWithAllUsers = async () => {
 	}))
 
 	return data
+}
+
+export const getOrdersWithAllUsersPerPage = async (
+	paginationProps: Omit<IPagination<IOrderResponseWithUser[]>['pagination'], '_totalRows'>
+) => {
+	const [ordersResponse, usersResponse] = await Promise.all([
+		await axiosClient.get<IPagination<IOrder[]>>('/orders', { params: paginationProps }),
+		await axiosClient.get<IUserResponse[]>('/users', { params: { role: 'user' } }),
+	])
+
+	const orders = ordersResponse.data
+	const users = usersResponse.data
+
+	orders.data = orders.data.map(order => ({
+		...order,
+		user: users.find(user => user.id === order.userId)!,
+	}))
+
+	const ordersWithUser: IPagination<IOrderResponseWithUser[]> = {
+		data: orders.data.map(order => ({
+			...order,
+			user: users.find(user => user.id === order.userId)!,
+		})),
+		pagination: orders.pagination,
+	}
+
+	return ordersWithUser
 }
 
 export const getOrdersWithAllUsersByUserId = async (userId: string) => {

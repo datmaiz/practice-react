@@ -6,7 +6,7 @@ export const createBag = async (bag: IBagRequest) => {
 }
 
 export const getBagsByUserId = async (userId: string) => {
-	return (await axiosClient.get<IBag[]>('/bags', { data: { id: userId } })).data
+	return (await axiosClient.get<IBag[]>('/bags', { params: { userId } })).data
 }
 
 export const deleteBagById = async (bagId: string) => {
