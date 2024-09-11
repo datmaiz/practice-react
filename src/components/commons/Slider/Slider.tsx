@@ -30,7 +30,7 @@ export const Slider: FC = () => {
 			/>
 			<div
 				ref={ref}
-				className='flex gap-6 overflow-x-auto overflow-y-hidden snap-x'
+				className='flex gap-6 overflow-x-auto overflow-y-hidden snap-x scroll-hidden'
 			>
 				{products?.map(product => (
 					<ProductCard

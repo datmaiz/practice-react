@@ -46,7 +46,7 @@ export const ProductCard: FC<ProductCardProps> = ({
 			<div className={`flex flex-col max-w-full`}>
 				<Text
 					level={'h6'}
-					className={`${direction === 'vertical' ? 'line-clamp-1' : 'line-clamp-3'} pt-[32px]`}
+					className={`${direction === 'vertical' ? 'line-clamp-1' : 'line-clamp-3'} pt-[32px] break-all`}
 				>
 					<Link to={`/products/${product.productId}`}>{product.name}</Link>
 				</Text>

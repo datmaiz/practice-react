@@ -13,6 +13,7 @@ export interface IUserResponse {
 	username: string
 	email: string
 	avatar: string
+	role: 'admin' | 'user'
 	createdAt: number
 }
 
