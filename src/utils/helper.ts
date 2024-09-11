@@ -17,10 +17,23 @@ export const randomId = () => {
  *
  * Example: `isActive('/products', '/products/102')` will return true beacause `/products/102` is a children of `/products` path
  */
-export const isActiveLink = (path: string, pathname: string) => {
-	if (path === '/') return path === pathname
+export const isActiveLink = (path: string, pathname: string, basePath: string = '/') => {
+	if (path === basePath) return path === pathname
 
 	return pathname.startsWith(path)
 }
 
-isActiveLink('', '')
+export const toURLSearchParams = (obj: Record<string, unknown>) => {
+	const params = new URLSearchParams()
+
+	Object.keys(obj).forEach(key => {
+		const value = obj[key]
+		if (Array.isArray(value)) {
+			value.forEach(val => params.append(key, val))
+		} else {
+			value && params.append(key, String(value))
+		}
+	})
+
+	return params.toString()
+}
