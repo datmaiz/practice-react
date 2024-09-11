@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { IBagRequest, IProduct } from '@/common/interfaces'
 import { Button, Text } from '@/components/elements'
@@ -19,7 +19,8 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 	const [searchParams, setSearchParams] = useSearchParams()
 	const [option, setOption] = useState<OrderOption>('sizes')
 	const [quantity, setQuantity] = useState(1)
-	const { auth } = useAuth()
+	const navigate = useNavigate()
+	const { auth, isAuthenticated } = useAuth()
 
 	const addBagMutation = useAddBagMutation()
 
@@ -46,6 +47,11 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 	}
 
 	const handleAddToBag = async () => {
+		if (!isAuthenticated) {
+			navigate('/auth/login')
+			return
+		}
+
 		const newBag: IBagRequest = {
 			productId: product.productId,
 			userId: auth!.id,

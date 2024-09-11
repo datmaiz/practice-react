@@ -55,7 +55,11 @@ export const MediaInformation = ({ product, images, onDeleteImage, onInputChange
 									onClick={() => onDeleteImage(image)}
 									className='absolute top-2 right-2 cursor-pointer'
 								/>
-								<Image src={image} />
+								<Image
+									src={image}
+									alt='image preview'
+									containerClassName='w-full h-full'
+								/>
 							</div>
 						))}
 					</ul>

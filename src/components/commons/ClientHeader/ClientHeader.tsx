@@ -14,7 +14,7 @@ export const ClientHeader = () => {
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
 	const { auth, deleteInfo } = useAuth()
-	const { data: bags } = useGetBagsByUserId(auth!.id)
+	const { data: bags = [] } = useGetBagsByUserId(auth?.id ?? '')
 
 	const handleLogout = () => {
 		navigate('/auth/login')

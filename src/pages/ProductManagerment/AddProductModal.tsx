@@ -1,19 +1,16 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { ChangeEvent, FC, useCallback, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Input, Button } from '@/components/elements'
 import { CloseIcon } from '@/assets/icons/outlined'
+import { Button, Input } from '@/components/elements'
 import { ImagePreview } from './ImagePreview'
-import { createProduct } from '@/services'
-import { toast } from 'react-toastify'
-import { useClickOutside } from '@/hooks'
-import { IProduct } from '@/common/interfaces'
+import { useAddProductMutation } from '@/hooks/useProductMutation'
+import { useSearchParams } from 'react-router-dom'
 
 interface AddProductModalProps {
 	onClose: () => void
-	addProduct: (product: IProduct) => void
 }
 
 const schema = z.object({
@@ -30,7 +27,7 @@ export type TImagePreview = {
 	urls: string[]
 }
 
-export const AddProductModal: FC<AddProductModalProps> = ({ onClose, addProduct }) => {
+export const AddProductModal: FC<AddProductModalProps> = ({ onClose }) => {
 	const {
 		register,
 		handleSubmit,
@@ -38,8 +35,11 @@ export const AddProductModal: FC<AddProductModalProps> = ({ onClose, addProduct 
 	} = useForm<DataForm>({ resolver: zodResolver(schema) })
 	const [imagePreview, setImagePreview] = useState<TImagePreview>({ urls: [], files: [] })
 	const ref = useRef(null)
+	const [searchParams] = useSearchParams()
+	const addProductMutation = useAddProductMutation(+(searchParams.get('page') ?? 1))
 
 	const onSubmit = async (data: DataForm) => {
+		console.log('submitting...')
 		const newProduct = {
 			name: data.name,
 			price: data.price,
@@ -49,15 +49,16 @@ export const AddProductModal: FC<AddProductModalProps> = ({ onClose, addProduct 
 			images: [],
 			publishedAt: Date.now(),
 		}
-		const response = await createProduct(newProduct, imagePreview.files)
-
-		if ('data' in response) {
-			toast.success(response.message)
-			addProduct(response.data)
-		} else {
-			toast.error(response.error)
-		}
-		onClose()
+		addProductMutation.mutate(
+			{ product: newProduct, files: imagePreview.files },
+			{
+				onSuccess: () => {
+					console.log('on success')
+					onClose()
+				},
+			}
+		)
+		console.log('submited')
 	}
 
 	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -86,10 +87,6 @@ export const AddProductModal: FC<AddProductModalProps> = ({ onClose, addProduct 
 		[imagePreview]
 	)
 
-	useClickOutside(ref, () => {
-		onClose()
-	})
-
 	return (
 		<form
 			className='max-w-[800px] w-full px-5 py-10 bg-white relative rounded-lg grid grid-cols-2 gap-4 shadow-lg'
@@ -97,7 +94,7 @@ export const AddProductModal: FC<AddProductModalProps> = ({ onClose, addProduct 
 			ref={ref}
 		>
 			<CloseIcon
-				onClick={() => onClose()}
+				onClick={onClose}
 				className='absolute right-4 top-4 cursor-pointer'
 			/>
 			<div className='flex flex-col gap-4'>
@@ -180,7 +177,7 @@ export const AddProductModal: FC<AddProductModalProps> = ({ onClose, addProduct 
 				<Button
 					variant={'secondary'}
 					styleType={'filled'}
-					loading={isSubmitting}
+					loading={isSubmitting || addProductMutation.isPending}
 				>
 					add product
 				</Button>
