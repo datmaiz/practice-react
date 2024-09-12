@@ -1,25 +1,38 @@
-import { useLayoutEffect, useState } from 'react'
+import { useCallback, useLayoutEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Text } from '@/components/elements'
-import { ClientContainer } from '..'
 import { BagIcon, GlassIcon, LogoutIcon, MenuIcon, PersonIcon } from '@/assets/icons/outlined'
+import { Text } from '@/components/elements'
+import { useAuth, useGetBagsByUserId, usePopup } from '@/hooks'
+import { ClientContainer } from '..'
 import { Badge } from '../Badge/Badge'
 import { ClientNavbar } from '../ClientNavbar/ClientNavbar'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks'
-import { useGetBagsByUserId } from '@/hooks/useGetBags'
+import { SearchModal } from '../SearchModal/SearchModal'
 
 export const ClientHeader = () => {
 	const [isNavOpened, setIsNavOpened] = useState<boolean>(false)
+	const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false)
+	const { openPopup } = usePopup()
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
 	const { auth, deleteInfo } = useAuth()
 	const { data: bags = [] } = useGetBagsByUserId(auth?.id ?? '')
 
 	const handleLogout = () => {
-		navigate('/auth/login')
-		deleteInfo()
+		openPopup({
+			customTitle: 'Are you sure?',
+			type: 'confirm',
+			content: 'Continue, if you want to logout this account else press Cancel',
+			callback() {
+				navigate('/auth/login')
+				deleteInfo()
+			},
+		})
 	}
+
+	const handleCloseModal = useCallback(() => {
+		setIsSearchModalOpen(false)
+	}, [])
 
 	useLayoutEffect(() => {
 		setIsNavOpened(false)
@@ -40,6 +53,7 @@ export const ClientHeader = () => {
 							width={27}
 							height={27}
 							className='hidden sm:block'
+							onClick={() => setIsSearchModalOpen(true)}
 						/>
 						<PersonIcon
 							width={27}
@@ -71,6 +85,10 @@ export const ClientHeader = () => {
 					isNavOpened={isNavOpened}
 				/>
 			</header>
+			<SearchModal
+				isOpen={isSearchModalOpen}
+				onClose={handleCloseModal}
+			/>
 		</ClientContainer>
 	)
 }

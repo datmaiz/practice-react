@@ -6,10 +6,14 @@ interface ModalProps {
 	onClose: () => void
 }
 
-export const Modal: FC<ModalProps> = memo(({ children }) => {
+export const Modal: FC<ModalProps> = memo(({ isShown, onClose, children }) => {
 	const handleClick = (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
-		if (e.target === e.currentTarget) close()
+		if (e.target === e.currentTarget) {
+			onClose()
+		}
 	}
+
+	if (!isShown) return null
 
 	return (
 		<div
