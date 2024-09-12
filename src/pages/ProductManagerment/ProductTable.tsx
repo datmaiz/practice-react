@@ -1,26 +1,31 @@
-import { toast } from 'react-toastify'
-import { FC, memo } from 'react'
-
-import { deleteProduct } from '@/services'
-import { numberToCurrency, numberToDate } from '@/utils'
-import { IProduct, ITableColumn } from '@/common/interfaces'
-import { BinIcon, PencilIcon } from '@/assets/icons/outlined'
-import { AutomaticTable, Image, Text } from '@/components/elements'
-import { usePopup } from '@/hooks/usePopup'
+import { memo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
-interface ProductTableProps {
-	rows: IProduct[]
-}
+import { BinIcon, PencilIcon } from '@/assets/icons/outlined'
+import { IProduct, ITableColumn } from '@/common/interfaces'
+import { Loader, Pagination } from '@/components/commons'
+import { AutomaticTable, Image, Text } from '@/components/elements'
+import { useDeleteProductMutation, useGetResourceWithPagination, usePagination, usePopup } from '@/hooks'
+import { numberToCurrency, numberToDate, queryKeys } from '@/utils'
 
-export const ProductTable: FC<ProductTableProps> = memo(({ rows }) => {
+export const ProductTable = memo(() => {
+	const { currentPage, nextPage, previousPage } = usePagination()
 	const { openPopup } = usePopup()
 	const naviagte = useNavigate()
-	const columns: ITableColumn<Pick<IProduct, 'id' | 'name' | 'price' | 'publishedAt' | 'images' | 'descriptions'>>[] = [
+	const { data: rows, isLoading } = useGetResourceWithPagination<IProduct[]>({
+		resource: '/products',
+		pagination: { _page: currentPage, _limit: 4 },
+		queryKey: [queryKeys.PRODUCTS_WITH_PAGINATION, { page: currentPage }],
+	})
+	const deleteProductMutation = useDeleteProductMutation(currentPage)
+
+	const columns: ITableColumn<Omit<IProduct, 'colors' | 'sizes'>>[] = [
 		{
 			title: '',
-			key: 'id',
+			key: 'productId',
 			_style: { width: 100 },
+			_className: 'aspect-square rounded-lg',
 			render: product => (
 				<Image
 					src={product.images[0]}
@@ -33,6 +38,7 @@ export const ProductTable: FC<ProductTableProps> = memo(({ rows }) => {
 		{
 			title: 'Name',
 			key: 'name',
+			_className: 'h-[1lh]',
 			render: product => (
 				<Text
 					variant={'secondary-regular'}
@@ -46,6 +52,7 @@ export const ProductTable: FC<ProductTableProps> = memo(({ rows }) => {
 		{
 			title: 'Price',
 			key: 'price',
+			_className: 'h-[1lh]',
 			render: product => (
 				<Text
 					variant={'secondary-regular'}
@@ -58,7 +65,7 @@ export const ProductTable: FC<ProductTableProps> = memo(({ rows }) => {
 		{
 			title: 'Description',
 			key: 'descriptions',
-			_className: 'w-[400px]',
+			_className: 'h-[1lh]',
 			render: product => (
 				<Text
 					variant={'secondary-regular'}
@@ -72,6 +79,7 @@ export const ProductTable: FC<ProductTableProps> = memo(({ rows }) => {
 		{
 			title: 'Published',
 			key: 'publishedAt',
+			_className: 'h-[1lh]',
 			render: product => (
 				<Text
 					variant={'secondary-regular'}
@@ -85,18 +93,19 @@ export const ProductTable: FC<ProductTableProps> = memo(({ rows }) => {
 		{
 			title: '',
 			key: 'images',
+			_className: 'h-[1lh]',
 			render: product => (
 				<div className='flex-ver gap-4'>
 					<PencilIcon
 						width={20}
 						height={20}
-						onClick={() => naviagte(product.id)}
+						onClick={() => naviagte(product.productId)}
 						className='text-secondary cursor-pointer'
 					/>
 					<BinIcon
 						width={20}
 						height={20}
-						onClick={() => handleDeleteProduct(product.id)}
+						onClick={() => handleDeleteProduct(product.productId)}
 						className='text-secondary cursor-pointer'
 					/>
 				</div>
@@ -109,25 +118,37 @@ export const ProductTable: FC<ProductTableProps> = memo(({ rows }) => {
 			content: 'This action will delete a product forever, are you sure about that ?',
 			type: 'confirm',
 			async callback() {
-				const response = await deleteProduct(productId)
-				console.log(response)
-				if ('data' in response) {
-					toast.success(response.message)
-				} else {
-					toast.error(response.error)
-				}
+				deleteProductMutation.mutate(productId, {
+					onSuccess: () => toast.success('Delete successfully'),
+					onError: e => console.log(e.message),
+				})
 			},
 		})
 	}
 
 	return (
-		<div className='overflow-auto table-fixed w-full'>
+		<div className='table-fixed w-full'>
 			<AutomaticTable
 				columns={columns}
-				rows={rows}
-				rowKey={'id'}
+				rows={rows?.data ?? []}
+				rowKey={'productId'}
 				_rowClassName='bg-white font-secondary-400'
+				isLoading={isLoading}
+				loadingRows={4}
 			/>
+			<Pagination
+				total={rows?.pagination?._totalRows ?? 1}
+				limit={rows?.pagination?._limit ?? 10}
+				currentPage={currentPage}
+				nextPage={nextPage}
+				previousPage={previousPage}
+			/>
+
+			{deleteProductMutation.isPending && (
+				<div className='fixed inset-0 bg-black/30 flex-center text-white'>
+					<Loader size={'3xl'} />
+				</div>
+			)}
 		</div>
 	)
 })

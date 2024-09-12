@@ -1,19 +1,30 @@
+import { useMutation } from '@tanstack/react-query'
+import { memo } from 'react'
 import { toast } from 'react-toastify'
-import { ChangeEvent, FC, memo } from 'react'
 
 import { BinIcon } from '@/assets/icons/outlined'
 import { ITableColumn, IUserResponse } from '@/common/interfaces'
+import { Loader, Pagination } from '@/components/commons'
 import { AutomaticTable, Image, Text } from '@/components/elements'
+import { useDeleteUserMutation, useGetResourceWithPagination, usePagination, usePopup } from '@/hooks'
 import { changeRole } from '@/services'
-import { Pagination } from '@/components/commons/Pagination/Pagination'
+import { queryKeys } from '@/utils'
 
-interface UserTableProps {
-	rows: IUserResponse[]
-	onDeleteUser: (userId: string) => void
-}
+export const UserTable = memo(() => {
+	const { currentPage, nextPage, previousPage } = usePagination()
 
-export const UserTable: FC<UserTableProps> = memo(({ rows, onDeleteUser }) => {
-	const columns: ITableColumn<Pick<IUserResponse, 'id' | 'avatar' | 'email' | 'role' | 'username'>>[] = [
+	const { data: rows, isLoading } = useGetResourceWithPagination<IUserResponse[]>({
+		resource: '/users',
+		queryKey: [queryKeys.USER_WITH_PAGINATION, { page: currentPage }],
+		pagination: { _limit: 4, _page: currentPage },
+	})
+	const { openPopup } = usePopup()
+	const changeRoleMutation = useMutation({
+		mutationFn: ({ role, userId }: { role: string; userId: string }) => changeRole(role, userId),
+	})
+	const deleteUserMutation = useDeleteUserMutation(currentPage)
+
+	const columns: ITableColumn<Omit<IUserResponse, 'createdAt'>>[] = [
 		{
 			title: 'Avatar',
 			key: 'avatar',
@@ -49,7 +60,7 @@ export const UserTable: FC<UserTableProps> = memo(({ rows, onDeleteUser }) => {
 			render: user => (
 				<select
 					defaultValue={user.role}
-					onChange={e => handleRoleChange(e, user.id)}
+					onChange={e => handleRoleChange(e.target.value, user.id)}
 					className='appearance-none outline-none px-4 py-2 rounded-lg text-center cursor-pointer'
 				>
 					<option value='user'>User</option>
@@ -64,36 +75,57 @@ export const UserTable: FC<UserTableProps> = memo(({ rows, onDeleteUser }) => {
 			render: user => (
 				<BinIcon
 					width={20}
-					onClick={() => onDeleteUser(user.id)}
+					onClick={() => handleDeleteUser(user.id)}
 					className='text-secondary cursor-pointer'
 				/>
 			),
 		},
 	]
 
-	const handleRoleChange = async (e: ChangeEvent<HTMLSelectElement>, userId: string) => {
-		const response = await changeRole(e.target.value, userId)
-		if ('data' in response) {
-			toast.success(response.message)
-		} else {
-			toast.error(response.error)
+	const handleRoleChange = async (role: string, userId: string) => {
+		changeRoleMutation.mutate({ role, userId })
+		if (changeRoleMutation.isSuccess) {
+			toast.success('Change role successfully')
 		}
+
+		if (changeRoleMutation.isError) {
+			toast.error(changeRoleMutation.error.message)
+		}
+	}
+
+	const handleDeleteUser = (userId: string) => {
+		openPopup({
+			type: 'confirm',
+			content: 'This action will delete a user forever. Are you sure?',
+			callback() {
+				deleteUserMutation.mutate(userId)
+			},
+		})
 	}
 
 	return (
 		<div className='table-fixed w-full'>
 			<AutomaticTable
 				columns={columns}
-				rows={rows}
+				rows={rows?.data ?? []}
 				rowKey={'id'}
 				_rowClassName='bg-white font-secondary-400'
 				loadingRows={4}
+				isLoading={isLoading}
 			/>
 			<Pagination
-				total={20}
-				offset={1}
-				limit={4}
+				total={rows?.pagination._totalRows ?? 0}
+				currentPage={currentPage}
+				limit={rows?.pagination._limit ?? 10}
+				nextPage={nextPage}
+				previousPage={previousPage}
 			/>
+
+			{(changeRoleMutation.isPending || deleteUserMutation.isPending) && (
+				<div className='fixed inset-0 bg-black/30 flex-center text-white'>
+					<Loader size={'3xl'} />
+				</div>
+			)}
 		</div>
 	)
 })

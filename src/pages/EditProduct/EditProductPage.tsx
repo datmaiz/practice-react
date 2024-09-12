@@ -1,17 +1,19 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
 
 import { IProduct } from '@/common/interfaces'
-import { getProductById, updateProduct } from '@/services'
-import { BaseInformation } from './BaseInformation'
-import { MoreInformation } from './MoreInformation'
+import { Loader } from '@/components/commons'
 import { Text } from '@/components/elements'
-import { MediaInformation } from './MediaInformation'
+import { useGetProductById } from '@/hooks'
+import { useUpdateProductMuatation } from '@/hooks/useProductMutation'
 import { TImagePreview } from '../ProductManagerment/AddProductModal'
-import { toast } from 'react-toastify'
+import { BaseInformation } from './BaseInformation'
+import { MediaInformation } from './MediaInformation'
+import { MoreInformation } from './MoreInformation'
 
 const schema = z.object({
 	name: z.string().min(1, 'Name can not be empty'),
@@ -27,7 +29,6 @@ const initialImagePreview: TImagePreview = {
 
 const EditProductPage = () => {
 	const { productId } = useParams<{ productId: string }>()
-	const [product, setProduct] = useState<IProduct>()
 	const {
 		register,
 		handleSubmit,
@@ -37,19 +38,21 @@ const EditProductPage = () => {
 		resolver: zodResolver(schema),
 	})
 	const [preview, setPreview] = useState<TImagePreview>(initialImagePreview)
-	const navigate = useNavigate()
+	const [product, setProduct] = useState<IProduct>()
+	const { data, isLoading } = useGetProductById(productId!)
+	const [searchParams] = useSearchParams()
+	const updateProductMutation = useUpdateProductMuatation(+(searchParams.get('page') ?? 1))
 
 	const handleSubmitForm = async (data: DataForm) => {
 		if (!product) return
 		const { name, descriptions, price } = data
 		const newProduct: IProduct = { ...product, name, descriptions, price }
-		const response = await updateProduct(newProduct, preview.files)
-		if ('data' in response) {
-			toast.success(response.message)
-			navigate('/admin/product', { replace: true })
-		} else {
-			toast.error(response.error)
-		}
+		await updateProductMutation.mutateAsync(
+			{ product: newProduct, files: preview.files },
+			{
+				onSuccess: () => toast.success('Update successfully'),
+			}
+		)
 	}
 
 	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -79,19 +82,18 @@ const EditProductPage = () => {
 		const newImages = product.images.filter(item => image != item)
 		setProduct({ ...product, images: newImages })
 	}
-
 	useEffect(() => {
-		;(async () => {
-			if (!productId) return
-			const response = await getProductById(productId)
-			if ('data' in response) {
-				setProduct(response.data)
-				reset(response.data)
-			}
-		})()
-	}, [productId])
+		if (data) {
+			setProduct(data)
+			reset(data)
+		}
+	}, [data])
 
-	return product ? (
+	return isLoading ? (
+		<div className='flex-center h-20 text-secondary'>
+			<Loader size={'2xl'} />
+		</div>
+	) : product ? (
 		<div>
 			<form
 				className='grid grid-cols-2 items-start gap-4 pt-8 *:flex *:flex-1 *:flex-col *:gap-4'
@@ -110,8 +112,8 @@ const EditProductPage = () => {
 					/>
 				</div>
 				<MoreInformation
-					setProduct={setProduct}
 					isSubmitting={isSubmitting}
+					setProduct={setProduct}
 					product={product}
 				/>
 			</form>

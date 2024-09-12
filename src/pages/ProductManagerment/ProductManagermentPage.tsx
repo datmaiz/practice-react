@@ -1,37 +1,16 @@
-import { MouseEvent, useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import { Text } from '@/components/elements'
-import { AddProductModal } from './AddProductModal'
-import { Button } from '@/components/elements'
-import { ProductTable } from './ProductTable'
 import { Modal } from '@/components/commons'
-import { IProduct } from '@/common/interfaces'
-import { getProducts } from '@/services'
-import { toast } from 'react-toastify'
+import { Button, Text } from '@/components/elements'
+import { AddProductModal } from './AddProductModal'
+import { ProductTable } from './ProductTable'
 
 const ProductManagermentPage = () => {
 	const [open, setOpen] = useState(false)
-	const [products, setProducts] = useState<IProduct[]>([])
 
-	const handleAddProductClick = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
-		e.stopPropagation()
+	const handleAddProductClick = () => {
 		setOpen(true)
 	}
-
-	const addNewProduct = (product: IProduct) => {
-		setProducts(prevProducts => [...prevProducts, product])
-	}
-
-	useEffect(() => {
-		;(async () => {
-			const response = await getProducts()
-			if ('data' in response) {
-				setProducts(response.data)
-			} else {
-				toast.error(response.error)
-			}
-		})()
-	}, [])
 
 	return (
 		<div>
@@ -51,17 +30,14 @@ const ProductManagermentPage = () => {
 				</Button>
 			</section>
 			<section className='overflow-auto p-0'>
-				<ProductTable rows={products} />
+				<ProductTable />
 			</section>
 			{open && (
 				<Modal
 					isShown={open}
 					onClose={() => setOpen(false)}
 				>
-					<AddProductModal
-						addProduct={addNewProduct}
-						onClose={() => setOpen(false)}
-					/>
+					<AddProductModal onClose={() => setOpen(false)} />
 				</Modal>
 			)}
 		</div>

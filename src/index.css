@@ -3,15 +3,27 @@
 @tailwind utilities;
 
 @layer components {
-  .flex-hor {
-    @apply flex justify-center
-  }
+	.flex-hor {
+		@apply flex justify-center;
+	}
 
-  .flex-ver {
-    @apply flex items-center
-  }
+	.flex-ver {
+		@apply flex items-center;
+	}
 
-  .flex-center {
-    @apply flex justify-center items-center
-  }
+	.flex-center {
+		@apply flex justify-center items-center;
+	}
+}
+
+@layer utilities {
+	.scroll-hidden::-webkit-scrollbar {
+		width: 0;
+		height: 0;
+	}
+
+	.scroll-hidden {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Fire Fox */
+	}
 }
