@@ -1,19 +1,20 @@
+import { lazy } from 'react'
 import { RouteProps } from 'react-router-dom'
 
-import DashboardPage from '@/pages/Dashboard'
-import LoginPage from '@/pages/Login/Login'
-import OrderManagermentPage from '@/pages/OrderManagerment'
-import ProductManageremntPage from '@/pages/ProductManagerment'
-import RegisterPage from '@/pages/Register'
-import SettingPage from '@/pages/Setting'
-import UserManagermentPage from '@/pages/UserManagement'
-import EditProductPage from '@/pages/EditProduct'
-import HomePage from '@/pages/Home'
-import ProductDetailsPage from '@/pages/ProductDetails'
-import BagPage from '@/pages/Bag/BagPage'
-import ClientOrderPage from '@/pages/ClientOrder/ClientOrderPage'
+const BagPage = lazy(() => import('@/pages/Bag/BagPage'))
+const DashboardPage = lazy(() => import('@/pages/Dashboard'))
+const EditProductPage = lazy(() => import('@/pages/EditProduct'))
+const HomePage = lazy(() => import('@/pages/Home'))
+const LoginPage = lazy(() => import('@/pages/Login/Login'))
+const OrderManagermentPage = lazy(() => import('@/pages/OrderManagerment'))
+const ProductDetailsPage = lazy(() => import('@/pages/ProductDetails'))
+const ProductManageremntPage = lazy(() => import('@/pages/ProductManagerment'))
+const RegisterPage = lazy(() => import('@/pages/Register'))
+const SettingPage = lazy(() => import('@/pages/Setting'))
+const UserManagermentPage = lazy(() => import('@/pages/UserManagement'))
+const ClientOrderPage = lazy(() => import('@/pages/ClientOrder/ClientOrderPage'))
 
-export const adminLayouts: RouteProps[] = [
+export const adminRoutes: RouteProps[] = [
 	{
 		path: '',
 		element: <DashboardPage />,
