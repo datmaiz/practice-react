@@ -6,6 +6,7 @@ import { IntroductionProducts } from './IntroductionProducts'
 import { TopRatingProducts } from './TopRatingProducts'
 import { useGetProducts } from '@/hooks/useGetProducts'
 import { Loader } from '@/components/commons'
+import { shuffleArray } from '@/utils'
 
 const HomePage = () => {
 	const { data: products, isLoading } = useGetProducts()
@@ -20,7 +21,7 @@ const HomePage = () => {
 					<Loader size={'3xl'} />
 				</div>
 			) : (
-				<IntroductionProducts products={products ?? []} />
+				<IntroductionProducts products={shuffleArray(products ?? [])} />
 			)}
 			<BedsheetBanner />
 			{isLoading ? (
@@ -28,7 +29,7 @@ const HomePage = () => {
 					<Loader size={'3xl'} />
 				</div>
 			) : (
-				<TopRatingProducts products={products ?? []} />
+				<TopRatingProducts products={shuffleArray(products ?? [])} />
 			)}
 			<Subscribe />
 		</div>

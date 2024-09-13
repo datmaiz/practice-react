@@ -37,3 +37,14 @@ export const toURLSearchParams = (obj: Record<string, unknown>) => {
 
 	return params.toString()
 }
+
+export const shuffleArray = <T>(list: T[]) => {
+	const clone = structuredClone(list)
+	for (var i = clone.length - 1; i >= 0; i--) {
+		var j = Math.floor(Math.random() * (i + 1))
+		var temp = clone[i]
+		clone[i] = clone[j]
+		clone[j] = temp
+	}
+	return clone
+}

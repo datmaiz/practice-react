@@ -1,15 +1,23 @@
 import { LogoutIcon } from '@/assets/icons/outlined'
 import { Text } from '@/components/elements'
-import { useAuth } from '@/hooks'
+import { useAuth, usePopup } from '@/hooks'
 import { useNavigate } from 'react-router-dom'
 
 export const AdminSidebarActions = () => {
+	const { openPopup } = usePopup()
 	const { deleteInfo } = useAuth()
 	const navigate = useNavigate()
 
 	const handleLogout = () => {
-		navigate('/auth/login')
-		deleteInfo()
+		openPopup({
+			customTitle: 'Are you sure?',
+			type: 'confirm',
+			content: 'Continue, if you want to logout this account else press Cancel',
+			callback() {
+				navigate('/auth/login')
+				deleteInfo()
+			},
+		})
 	}
 
 	return (
