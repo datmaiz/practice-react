@@ -1,6 +1,7 @@
+import { memo } from 'react'
+
 import { usePopup } from '@/hooks/usePopup'
 import { Button, Text } from '../../elements'
-import { memo } from 'react'
 
 export const GlobalPopup = () => {
 	const { type, content } = usePopup()
@@ -17,12 +18,10 @@ const ConfirmationPopup = memo(() => {
 
 	const handleCancelClick = () => {
 		closePopup(false)
-		console.log('Cancel')
 	}
 
 	const handleConfirmClick = () => {
 		closePopup(true)
-		console.log('confirm')
 	}
 
 	return (

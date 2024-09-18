@@ -1,18 +1,16 @@
 import { ReactNode, createContext, useCallback, useState } from 'react'
 
-type TPopup = 'confirm' | (string & {})
-
-export interface PopupProps {
+export type PopupProps = {
 	customTitle?: string
 	content: string
-	type: TPopup
-	callback: () => void | Promise<void>
-}
+} & (TConfirmPopup | TInfoPopup)
 
-export interface PopupContextProps extends PopupProps {
+export type PopupType = TConfirmPopup | TInfoPopup
+
+export type PopupContextProps = {
 	openPopup: (props: PopupProps) => void
 	closePopup: (isConfirmed: boolean) => void
-}
+} & PopupProps
 
 export const PopupContext = createContext<PopupContextProps>({
 	customTitle: '',
@@ -22,6 +20,15 @@ export const PopupContext = createContext<PopupContextProps>({
 	openPopup() {},
 	closePopup() {},
 })
+
+type TConfirmPopup = {
+	type: 'confirm'
+	callback: () => void | Promise<void>
+}
+
+type TInfoPopup = {
+	type: 'info'
+}
 
 const initialPopup: PopupProps = {
 	customTitle: '',
@@ -43,7 +50,7 @@ export const PopupProvider = ({ children }: { children: ReactNode }) => {
 	const closePopup = useCallback(
 		(isConfirmed: boolean) => {
 			setProps({ ...initialPopup, content: '' })
-			if (isConfirmed) {
+			if (isConfirmed && props.type === 'confirm') {
 				props.callback()
 			}
 		},
