@@ -1,5 +1,7 @@
 import { ReactNode, createContext, useCallback, useState } from 'react'
 
+const noop = () => {}
+
 export type PopupProps = {
 	customTitle?: string
 	content: string
@@ -9,16 +11,16 @@ export type PopupType = TConfirmPopup | TInfoPopup
 
 export type PopupContextProps = {
 	openPopup: (props: PopupProps) => void
-	closePopup: (isConfirmed: boolean) => void
+	closePopup: (closeProps: TCloseFunctionProps) => void
 } & PopupProps
 
 export const PopupContext = createContext<PopupContextProps>({
 	customTitle: '',
 	content: '',
 	type: 'confirm',
-	callback() {},
-	openPopup() {},
-	closePopup() {},
+	callback: noop,
+	openPopup: noop,
+	closePopup: noop,
 })
 
 type TConfirmPopup = {
@@ -34,8 +36,19 @@ const initialPopup: PopupProps = {
 	customTitle: '',
 	content: '',
 	type: 'confirm',
-	callback() {},
+	callback: noop,
 }
+
+type TCloseConfirmFunctionProps = {
+	type: 'confirm'
+	isConfirm: boolean
+}
+
+type TCloseInfoFunctionProps = {
+	type: 'info'
+}
+
+type TCloseFunctionProps = TCloseConfirmFunctionProps | TCloseInfoFunctionProps
 
 export const PopupProvider = ({ children }: { children: ReactNode }) => {
 	const [props, setProps] = useState<PopupProps>(initialPopup)
@@ -48,9 +61,9 @@ export const PopupProvider = ({ children }: { children: ReactNode }) => {
 	)
 
 	const closePopup = useCallback(
-		(isConfirmed: boolean) => {
+		(closeProps: TCloseFunctionProps) => {
 			setProps({ ...initialPopup, content: '' })
-			if (isConfirmed && props.type === 'confirm') {
+			if (closeProps.type === 'confirm' && closeProps.isConfirm && props.type === 'confirm') {
 				props.callback()
 			}
 		},

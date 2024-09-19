@@ -2,7 +2,7 @@ import { useCallback, useLayoutEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { BagIcon, GlassIcon, LogoutIcon, MenuIcon, PersonIcon } from '@/assets/icons/outlined'
-import { Text } from '@/components/elements'
+import { Image, Text } from '@/components/elements'
 import { useAuth, useGetBagsByUserId, usePopup } from '@/hooks'
 import { ClientContainer } from '..'
 import { Badge } from '../Badge/Badge'
@@ -15,7 +15,7 @@ export const ClientHeader = () => {
 	const { openPopup } = usePopup()
 	const navigate = useNavigate()
 	const { pathname } = useLocation()
-	const { auth, deleteInfo } = useAuth()
+	const { auth, deleteInfo, isAuthenticated } = useAuth()
 	const { data: bags = [] } = useGetBagsByUserId(auth?.id ?? '')
 
 	const handleLogout = () => {
@@ -55,10 +55,17 @@ export const ClientHeader = () => {
 							className='hidden sm:block'
 							onClick={() => setIsSearchModalOpen(true)}
 						/>
-						<PersonIcon
-							width={27}
-							height={27}
-						/>
+						{isAuthenticated ? (
+							<Image
+								src={auth?.avatar}
+								containerClassName='w-[30px] h-[30px] rounded-full'
+							/>
+						) : (
+							<PersonIcon
+								width={27}
+								height={27}
+							/>
+						)}
 						<Badge countNumber={bags?.length ?? 0}>
 							<BagIcon
 								width={27}
@@ -66,12 +73,14 @@ export const ClientHeader = () => {
 								onClick={() => navigate('/bags')}
 							/>
 						</Badge>
-						<LogoutIcon
-							width={27}
-							height={27}
-							className='hidden sm:block'
-							onClick={handleLogout}
-						/>
+						{isAuthenticated && (
+							<LogoutIcon
+								width={27}
+								height={27}
+								className='hidden sm:block'
+								onClick={handleLogout}
+							/>
+						)}
 						<MenuIcon
 							width={27}
 							height={27}

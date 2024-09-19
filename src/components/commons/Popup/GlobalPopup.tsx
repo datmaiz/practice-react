@@ -14,14 +14,14 @@ export const GlobalPopup = () => {
 }
 
 const ConfirmationPopup = memo(() => {
-	const { content, closePopup } = usePopup()
+	const { content, closePopup, type, customTitle } = usePopup()
 
 	const handleCancelClick = () => {
-		closePopup(false)
+		closePopup({ type, isConfirm: false })
 	}
 
 	const handleConfirmClick = () => {
-		closePopup(true)
+		closePopup({ type, isConfirm: true })
 	}
 
 	return (
@@ -31,7 +31,7 @@ const ConfirmationPopup = memo(() => {
 				level={'h3'}
 				className='text-center'
 			>
-				Are you sure ?
+				{customTitle || 'Are you sure?'}
 			</Text>
 			<Text
 				variant={'secondary-semi'}
