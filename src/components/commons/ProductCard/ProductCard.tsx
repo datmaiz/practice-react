@@ -23,11 +23,13 @@ export const ProductCard: FC<ProductCardProps> = ({
 }) => {
 	return (
 		<article className={cn(productCardVariants({ direction }), custom)}>
-			<div className='relative group h-full'>
+			<div
+				className={`relative group h-full ${direction === 'horizontal' ? 'w-[200px] shrink-0 gap-[32px] h-auto' : ''}`}
+			>
 				<Image
 					src={product.images[0]}
 					alt={product.name}
-					containerClassName={`${direction === 'horizontal' ? 'aspect-[2/3]' : 'aspect-[3/4]'} size-full`}
+					containerClassName={`${direction === 'horizontal' ? '' : 'aspect-[3/4]'} size-full`}
 				/>
 				{direction === 'vertical' && !isColorsShown && (
 					<div className='absolute w-[80%] top-1/2 left-1/2 -translate-x-1/2 flex py-4 rounded-full opacity-0 justify-center bg-white shadow-lg duration-300 translate-y-full group-hover:-translate-y-1/2 group-hover:opacity-100'>

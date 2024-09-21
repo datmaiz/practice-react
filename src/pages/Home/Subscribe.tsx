@@ -5,7 +5,7 @@ import { Input, Text } from '@/components/elements'
 export const Subscribe = () => {
 	return (
 		<ClientContainer>
-			<section className='flex-ver justify-between text-black-600 pt-[91px] pb-[110px]'>
+			<section className='flex-col lg:flex-row flex-ver justify-between text-black-600 pt-[91px] pb-[110px]'>
 				<div>
 					<Text level={'h3'}>SING UP FOR THE NEWSLETTER</Text>
 					<Text

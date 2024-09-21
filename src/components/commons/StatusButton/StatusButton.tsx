@@ -10,7 +10,7 @@ interface StatusButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	children: ReactNode
 }
 
-export const StatusButton: FC<StatusButtonProps> = ({ status, className, isLoading = true, children, ...others }) => {
+export const StatusButton: FC<StatusButtonProps> = ({ status, className, isLoading = false, children, ...others }) => {
 	const statusColor = status === 'waiting' ? 'text-gray-600' : status === 'rejected' ? 'text-red-500' : 'text-green-500'
 
 	return (

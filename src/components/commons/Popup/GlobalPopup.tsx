@@ -1,6 +1,7 @@
+import { memo } from 'react'
+
 import { usePopup } from '@/hooks/usePopup'
 import { Button, Text } from '../../elements'
-import { memo } from 'react'
 
 export const GlobalPopup = () => {
 	const { type, content } = usePopup()
@@ -13,16 +14,14 @@ export const GlobalPopup = () => {
 }
 
 const ConfirmationPopup = memo(() => {
-	const { content, closePopup } = usePopup()
+	const { content, closePopup, type, customTitle } = usePopup()
 
 	const handleCancelClick = () => {
-		closePopup(false)
-		console.log('Cancel')
+		closePopup({ type, isConfirm: false })
 	}
 
 	const handleConfirmClick = () => {
-		closePopup(true)
-		console.log('confirm')
+		closePopup({ type, isConfirm: true })
 	}
 
 	return (
@@ -32,7 +31,7 @@ const ConfirmationPopup = memo(() => {
 				level={'h3'}
 				className='text-center'
 			>
-				Are you sure ?
+				{customTitle || 'Are you sure?'}
 			</Text>
 			<Text
 				variant={'secondary-semi'}

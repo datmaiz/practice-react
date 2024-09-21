@@ -90,7 +90,10 @@ export const useUpdateProductMuatation = (
 
 			const newImages = [...product.images, ...files.map(file => URL.createObjectURL(file))]
 
+			console.log(queryClient.getQueriesData({ queryKey: [queryKeys.PRODUCTS_WITH_PAGINATION, { page: 4 }] }))
+			console.log('queryKey', queryKey)
 			const previousData = queryClient.getQueriesData({ queryKey: queryKey })
+			console.log(previousData)
 			queryClient.setQueryData<IPagination<IProduct[]>>(queryKey, old => {
 				console.log(old)
 				return old

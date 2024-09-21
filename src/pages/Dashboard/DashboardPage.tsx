@@ -4,9 +4,8 @@ import { OverviewCard } from '@/components/commons/OverviewCard/OverviewCard'
 import { useGetOrdersWithAllUsers } from '@/hooks/useGetOrders'
 import { useGetProducts } from '@/hooks/useGetProducts'
 import { useGetUsers } from '@/hooks/useGetUsers'
-import { FC } from 'react'
 
-const DashboardPage: FC = () => {
+const DashboardPage = () => {
 	const { data: users, isLoading: isUsersLoading } = useGetUsers()
 	const { data: products, isLoading: isProductsLoading } = useGetProducts()
 	const { data: orders, isLoading: isOrdersLoading } = useGetOrdersWithAllUsers()
