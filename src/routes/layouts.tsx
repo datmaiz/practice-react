@@ -1,18 +1,18 @@
-import { lazy } from 'react'
+import { lazyImport } from '@/utils/lazyImport'
 import { RouteProps } from 'react-router-dom'
 
-const BagPage = lazy(() => import('@/pages/Bag/BagPage'))
-const DashboardPage = lazy(() => import('@/pages/Dashboard'))
-const EditProductPage = lazy(() => import('@/pages/EditProduct'))
-const HomePage = lazy(() => import('@/pages/Home'))
-const LoginPage = lazy(() => import('@/pages/Login/Login'))
-const OrderManagermentPage = lazy(() => import('@/pages/OrderManagerment'))
-const ProductDetailsPage = lazy(() => import('@/pages/ProductDetails'))
-const ProductManageremntPage = lazy(() => import('@/pages/ProductManagerment'))
-const RegisterPage = lazy(() => import('@/pages/Register'))
-const SettingPage = lazy(() => import('@/pages/Setting'))
-const UserManagermentPage = lazy(() => import('@/pages/UserManagement'))
-const ClientOrderPage = lazy(() => import('@/pages/ClientOrder/ClientOrderPage'))
+const BagPage = lazyImport(() => import('@/pages/Bag/BagPage'))
+const DashboardPage = lazyImport(() => import('@/pages/Dashboard'))
+const EditProductPage = lazyImport(() => import('@/pages/EditProduct'))
+const HomePage = lazyImport(() => import('@/pages/Home'))
+const LoginPage = lazyImport(() => import('@/pages/Login/Login'))
+const OrderManagermentPage = lazyImport(() => import('@/pages/OrderManagerment'))
+const ProductDetailsPage = lazyImport(() => import('@/pages/ProductDetails'))
+const ProductManageremntPage = lazyImport(() => import('@/pages/ProductManagerment'))
+const RegisterPage = lazyImport(() => import('@/pages/Register'))
+const SettingPage = lazyImport(() => import('@/pages/Setting'))
+const UserManagermentPage = lazyImport(() => import('@/pages/UserManagement'))
+const ClientOrderPage = lazyImport(() => import('@/pages/ClientOrder/ClientOrderPage'))
 
 export const adminRoutes: RouteProps[] = [
 	{

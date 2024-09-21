@@ -99,7 +99,7 @@ export const ProductTable = memo(() => {
 					<PencilIcon
 						width={20}
 						height={20}
-						onClick={() => naviagte(product.productId)}
+						onClick={() => naviagte(product.productId + `?page=${currentPage}`)}
 						className='text-secondary cursor-pointer'
 					/>
 					<BinIcon

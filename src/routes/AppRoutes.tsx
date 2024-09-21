@@ -1,7 +1,6 @@
 import { Children } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import { SuspenseWrapper } from '@/components/commons'
 import NotFoundPage from '@/pages/NotFound'
 import { AuthLayout, adminRoutes, authRoutes, clientRoutes, publicRoutes } from '.'
 import AdminLayout from './AdminLayout'
@@ -21,11 +20,7 @@ export const AppRoutes = () => {
 						adminRoutes.map(route => (
 							<Route
 								{...route}
-								element={
-									<SuspenseWrapper>
-										<RequiredRole role='admin'>{route.element}</RequiredRole>
-									</SuspenseWrapper>
-								}
+								element={<RequiredRole role='admin'>{route.element}</RequiredRole>}
 							/>
 						))
 					)}
@@ -40,7 +35,7 @@ export const AppRoutes = () => {
 						authRoutes.map(route => (
 							<Route
 								{...route}
-								element={<SuspenseWrapper>{route.element}</SuspenseWrapper>}
+								element={route.element}
 							/>
 						))
 					)}
@@ -56,11 +51,7 @@ export const AppRoutes = () => {
 						clientRoutes.map(route => (
 							<Route
 								{...route}
-								element={
-									<SuspenseWrapper>
-										<RequiredRole role='user'>{route.element}</RequiredRole>
-									</SuspenseWrapper>
-								}
+								element={<RequiredRole role='user'>{route.element}</RequiredRole>}
 							/>
 						))
 					)}
@@ -69,7 +60,7 @@ export const AppRoutes = () => {
 						publicRoutes.map(route => (
 							<Route
 								{...route}
-								element={<SuspenseWrapper>{route.element}</SuspenseWrapper>}
+								element={route.element}
 							/>
 						))
 					)}
