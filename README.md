@@ -1,30 +1,45 @@
-# React + TypeScript + Vite
+### Practice ReactJS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## TIMELINE:
 
-Currently, two official plugins are available:
+- 1 month
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## TARGET:
 
-## Expanding the ESLint configuration
+- Apply ReactJs's knowledge to build a SPA
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Use libs and css framework with ReactJs
 
-- Configure the top-level `parserOptions` property like this:
+## TECHNICAL STACKS
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+- ReactJs
+- Typescript
+- Tailwind css
+- React query
+- Axios
+- Json server
+
+## WEB DESIGN:
+
+- [Client Design](<https://www.figma.com/design/0tgr7HLChwH9bXNH14IwEU/MOODY-STORE-E-COMMERCE-WEB-SITE-(Community)-(Copy)?node-id=1-910&m=dev>)
+
+- [Admin Design](<https://www.figma.com/design/3xuL823Qs9ZgbqddLQGuM0/Crud-Operations-(Community)-(Copy)?node-id=0-1&m=dev>)
+
+## SOURCE CODE
+
+- To start: Clone project : git clone [git](https://github.com/datmaiz/practice-react)
+
+## HOW TO RUN
+
+- Dillinger requires [Node.js](https://nodejs.org/) v18 + to run.
+
+```sh
+cd practice-react
+npm install
+npm run dev
+Open on web: http://localhost:5173
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- Routes:
+  - Home: /
+  - Admin Dashboard: /admin
