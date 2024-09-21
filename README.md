@@ -43,3 +43,7 @@ Open on web: http://localhost:5173
 - Routes:
   - Home: /
   - Admin Dashboard: /admin
+
+- admin accoụnt:
+  - email: email@gmail.com
+  - password: mypassword
