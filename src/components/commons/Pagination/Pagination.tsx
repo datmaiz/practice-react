@@ -1,4 +1,5 @@
 import { Button, Text } from '@/components/elements'
+import { memo } from 'react'
 
 interface PaginationProps {
 	total: number
@@ -8,7 +9,7 @@ interface PaginationProps {
 	previousPage?: () => void
 }
 
-export const Pagination = ({ total, limit, currentPage, previousPage, nextPage }: PaginationProps) => {
+export const Pagination = memo(({ total, limit, currentPage, previousPage, nextPage }: PaginationProps) => {
 	return (
 		<div className='flex-ver justify-end md:justify-between bg-white p-4'>
 			<Text
@@ -41,4 +42,4 @@ export const Pagination = ({ total, limit, currentPage, previousPage, nextPage }
 			</div>
 		</div>
 	)
-}
+})

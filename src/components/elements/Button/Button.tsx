@@ -1,5 +1,5 @@
 import { VariantProps } from 'class-variance-authority'
-import { ButtonHTMLAttributes, FC, ReactNode } from 'react'
+import { ButtonHTMLAttributes, FC, ReactNode, memo } from 'react'
 import { buttonVariants } from './button-variants'
 import cn from '@/utils/cn'
 
@@ -8,7 +8,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantPr
 	loading?: boolean
 }
 
-export const Button: FC<ButtonProps> = ({ className, variant, styleType, loading, children, ...others }) => {
+export const Button: FC<ButtonProps> = memo(({ className, variant, styleType, loading, children, ...others }) => {
 	return (
 		<button
 			className={cn(
@@ -25,4 +25,4 @@ export const Button: FC<ButtonProps> = ({ className, variant, styleType, loading
 			{children}
 		</button>
 	)
-}
+})

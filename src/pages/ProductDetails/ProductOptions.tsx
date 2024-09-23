@@ -72,8 +72,8 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 	useEffect(() => {
 		setSearchParams(
 			params => {
-				if (product.colors.length > 0) params.set('colors', product.colors[0])
-				if (product.sizes.length > 0) params.set('sizes', product.sizes[0])
+				if (product.colors.length > 0 && !params.get('colors')) params.set('colors', product.colors[0])
+				if (product.sizes.length > 0 && !params.get('sizes')) params.set('sizes', product.sizes[0])
 				return params
 			},
 			{ replace: true }
