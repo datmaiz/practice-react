@@ -14,14 +14,14 @@ export const GlobalPopup = memo(() => {
 })
 
 const ConfirmationPopup = memo(() => {
-	const { content, closePopup, type, customTitle } = usePopup()
+	const { content, closePopup, customTitle } = usePopup()
 
 	const handleCancelClick = useCallback(() => {
-		closePopup({ type, isConfirm: false })
+		closePopup({ type: 'confirm', isConfirm: false })
 	}, [])
 
 	const handleConfirmClick = useCallback(() => {
-		closePopup({ type, isConfirm: true })
+		closePopup({ type: 'confirm', isConfirm: true })
 	}, [])
 
 	return (

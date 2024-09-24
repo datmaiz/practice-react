@@ -1,9 +1,11 @@
-import { IBreadcrumb } from '@/common/interfaces'
-import { Text } from '@/components/elements'
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { Fragment } from 'react/jsx-runtime'
 
-export const Breadcrumb = ({ breadcrumbs }: { breadcrumbs: IBreadcrumb[] }) => {
+import { IBreadcrumb } from '@/common/interfaces'
+import { Text } from '@/components/elements'
+
+export const Breadcrumb = memo(({ breadcrumbs }: { breadcrumbs: IBreadcrumb[] }) => {
 	return (
 		<div className='flex-ver gap-1'>
 			{breadcrumbs.map((item, index) => (
@@ -20,4 +22,4 @@ export const Breadcrumb = ({ breadcrumbs }: { breadcrumbs: IBreadcrumb[] }) => {
 			))}
 		</div>
 	)
-}
+})

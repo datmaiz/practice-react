@@ -1,13 +1,12 @@
+import { ChangeEvent, memo, useCallback, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-
-import { IBagRequest, IProduct } from '@/common/interfaces'
-import { Button, Text } from '@/components/elements'
-import { numberToCurrency } from '@/utils'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { Radio } from '@/components/elements/Radio/Radio'
-import { AddIcon, MinusIcon } from '@/assets/icons/filled'
-import { useAddBagMutation, useAuth } from '@/hooks'
 import { toast } from 'react-toastify'
+
+import { AddIcon, MinusIcon } from '@/assets/icons/filled'
+import { IBagRequest, IProduct } from '@/common/interfaces'
+import { Button, Radio, Text } from '@/components/elements'
+import { useAddBagMutation, useAuth } from '@/hooks'
+import { numberToCurrency } from '@/utils'
 
 interface ProductOptionsProps {
 	product: IProduct
@@ -28,7 +27,7 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 		setOption(e.target.value as OrderOption)
 	}
 
-	const handleRadioChange = (value: string) => {
+	const handleRadioChange = useCallback((value: string) => {
 		setSearchParams(
 			params => {
 				params.set(option, value)
@@ -36,15 +35,15 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 			},
 			{ replace: true }
 		)
-	}
+	}, [])
 
-	const handleIncreaseQuantity = () => {
+	const handleIncreaseQuantity = useCallback(() => {
 		setQuantity(quantity + 1)
-	}
+	}, [quantity])
 
-	const handleDecreaseQuantity = () => {
+	const handleDecreaseQuantity = useCallback(() => {
 		setQuantity(quantity === 1 ? 1 : quantity - 1)
-	}
+	}, [])
 
 	const handleAddToBag = async () => {
 		if (!isAuthenticated) {
@@ -91,16 +90,11 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 				{numberToCurrency(product.price)}
 			</Text>
 			<div className='flex gap-4 pt-8'>
-				{product[option].map(item => (
-					<Radio
-						key={item}
-						title={option}
-						content={item}
-						name={option}
-						checked={searchParams.get(option) === item}
-						onChange={() => handleRadioChange(item)}
-					/>
-				))}
+				<Options
+					product={product}
+					option={option}
+					handleRadioChange={handleRadioChange}
+				/>
 			</div>
 			<div className='flex-ver justify-between pt-6'>
 				<Text level={'h6'}>Quantity:</Text>
@@ -148,3 +142,24 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
 		</div>
 	)
 }
+
+interface OptionsProps {
+	product: IProduct
+	option: OrderOption
+	handleRadioChange: (item: string) => void
+}
+
+const Options = memo(({ product, option, handleRadioChange }: OptionsProps) => {
+	const [searchParams] = useSearchParams()
+
+	return product[option].map(item => (
+		<Radio
+			key={item}
+			title={option}
+			content={item}
+			name={option}
+			checked={searchParams.get(option) === item}
+			onChange={() => handleRadioChange(item)}
+		/>
+	))
+})

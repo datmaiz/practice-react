@@ -1,4 +1,4 @@
-import { FC, InputHTMLAttributes, useId } from 'react'
+import { FC, InputHTMLAttributes, memo, useId } from 'react'
 import { Text } from '..'
 
 interface RadioProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -6,7 +6,7 @@ interface RadioProps extends InputHTMLAttributes<HTMLInputElement> {
 	content: string
 }
 
-export const Radio: FC<RadioProps> = ({ title, content, ...others }) => {
+export const Radio: FC<RadioProps> = memo(({ title, content, ...others }) => {
 	const radioId = useId()
 
 	return (
@@ -34,4 +34,4 @@ export const Radio: FC<RadioProps> = ({ title, content, ...others }) => {
 			/>
 		</label>
 	)
-}
+})
