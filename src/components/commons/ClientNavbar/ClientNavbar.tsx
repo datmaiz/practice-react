@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import { CloseIcon } from '@/assets/icons/outlined'
 import { Text } from '@/components/elements'
-import { clientNavbarRoutes } from '@/utils'
+import { clientNavbarRoutes } from '@/routes'
 
 interface ClientNavbarProps {
 	isNavOpened: boolean

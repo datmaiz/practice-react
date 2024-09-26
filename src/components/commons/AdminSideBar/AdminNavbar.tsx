@@ -1,8 +1,9 @@
-import { Text } from '@/components/elements'
-import { isActiveLink } from '@/utils'
-import { adminNavbarRoutes } from '@/utils/constants'
 import { Children } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+
+import { Text } from '@/components/elements'
+import { adminNavbarRoutes } from '@/routes'
+import { isActiveLink } from '@/utils'
 
 export const AdminNavbar = () => {
 	const { pathname } = useLocation()
