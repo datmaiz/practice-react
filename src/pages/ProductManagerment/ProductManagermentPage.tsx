@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Modal } from '@/components/commons'
 import { Button, Text } from '@/components/elements'
@@ -8,9 +8,13 @@ import { ProductTable } from './ProductTable'
 const ProductManagermentPage = () => {
 	const [open, setOpen] = useState(false)
 
-	const handleAddProductClick = () => {
+	const handleAddProductClick = useCallback(() => {
 		setOpen(true)
-	}
+	}, [])
+
+	const closeModal = useCallback(() => {
+		setOpen(false)
+	}, [])
 
 	return (
 		<div>
@@ -35,9 +39,9 @@ const ProductManagermentPage = () => {
 			{open && (
 				<Modal
 					isShown={open}
-					onClose={() => setOpen(false)}
+					onClose={closeModal}
 				>
-					<AddProductModal onClose={() => setOpen(false)} />
+					<AddProductModal onClose={closeModal} />
 				</Modal>
 			)}
 		</div>

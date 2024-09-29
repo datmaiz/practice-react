@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { Dispatch, FC, SetStateAction, memo, useCallback, useState } from 'react'
 
 import { Button, Input, Text } from '@/components/elements'
 import { IProduct } from '@/common/interfaces'
@@ -13,27 +13,34 @@ interface MoreInformationProps {
 export const MoreInformation: FC<MoreInformationProps> = ({ product, setProduct, isSubmitting }) => {
 	const [size, setSize] = useState<string>('')
 	const [color, setColor] = useState<string>('')
-	const handleAddSize = () => {
+
+	const handleAddSize = useCallback(() => {
 		const newSizes = [...product.sizes, size]
 		setProduct({ ...product, sizes: newSizes })
 		setSize('')
-	}
+	}, [product, size])
 
-	const handleDeleteSize = (size: string) => {
-		const newSizes = product.sizes.filter(each => size !== each)
-		setProduct({ ...product, sizes: newSizes })
-	}
+	const handleDeleteSize = useCallback(
+		(size: string) => {
+			const newSizes = product.sizes.filter(each => size !== each)
+			setProduct({ ...product, sizes: newSizes })
+		},
+		[product]
+	)
 
-	const handleAddColor = () => {
+	const handleAddColor = useCallback(() => {
 		const newColors = [...product.colors, color]
 		setProduct({ ...product, colors: newColors })
 		setColor('')
-	}
+	}, [product, color])
 
-	const handleDeletColor = (color: string) => {
-		const newColors = product.colors.filter(each => color !== each)
-		setProduct({ ...product, colors: newColors })
-	}
+	const handleDeletColor = useCallback(
+		(color: string) => {
+			const newColors = product.colors.filter(each => color !== each)
+			setProduct({ ...product, colors: newColors })
+		},
+		[product]
+	)
 
 	return (
 		<section className='border border-gray-500 rounded-lg p-4'>
@@ -66,7 +73,7 @@ export const MoreInformation: FC<MoreInformationProps> = ({ product, setProduct,
 						<Tag
 							key={size}
 							content={size}
-							onDeleteClick={() => handleDeleteSize(size)}
+							onDeleteClick={handleDeleteSize}
 						/>
 					))}
 				</ul>
@@ -94,7 +101,7 @@ export const MoreInformation: FC<MoreInformationProps> = ({ product, setProduct,
 						<Tag
 							key={color}
 							content={color}
-							onDeleteClick={() => handleDeletColor(color)}
+							onDeleteClick={handleDeletColor}
 						/>
 					))}
 				</ul>
@@ -111,19 +118,19 @@ export const MoreInformation: FC<MoreInformationProps> = ({ product, setProduct,
 
 interface TagProps {
 	content: string
-	onDeleteClick: () => void
+	onDeleteClick: (color: string) => void
 }
 
-const Tag = ({ content, onDeleteClick }: TagProps) => {
+const Tag = memo(({ content, onDeleteClick }: TagProps) => {
 	return (
 		<li className='relative py-3 px-5 rounded-lg bg-gray-300'>
 			<CloseIcon
 				className='absolute top-2 right-2 cursor-pointer'
-				onClick={onDeleteClick}
+				onClick={() => onDeleteClick(content)}
 				width={10}
 				height={10}
 			/>
 			<span>{content}</span>
 		</li>
 	)
-}
+})

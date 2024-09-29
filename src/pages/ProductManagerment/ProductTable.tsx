@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
@@ -20,100 +20,103 @@ export const ProductTable = memo(() => {
 	})
 	const deleteProductMutation = useDeleteProductMutation(currentPage)
 
-	const columns: ITableColumn<Omit<IProduct, 'colors' | 'sizes'>>[] = [
-		{
-			title: '',
-			key: 'productId',
-			_style: { width: 100 },
-			_className: 'aspect-square rounded-lg',
-			render: product => (
-				<Image
-					src={product.images[0]}
-					alt={product.name}
-					shape={'rounded'}
-					containerClassName='w-20 aspect-square'
-				/>
-			),
-		},
-		{
-			title: 'Name',
-			key: 'name',
-			_className: 'h-[1lh]',
-			render: product => (
-				<Text
-					variant={'secondary-regular'}
-					level={'h7'}
-					className='line-clamp-2'
-				>
-					{product.name}
-				</Text>
-			),
-		},
-		{
-			title: 'Price',
-			key: 'price',
-			_className: 'h-[1lh]',
-			render: product => (
-				<Text
-					variant={'secondary-regular'}
-					level={'h7'}
-				>
-					{numberToCurrency(product.price)}
-				</Text>
-			),
-		},
-		{
-			title: 'Description',
-			key: 'descriptions',
-			_className: 'h-[1lh]',
-			render: product => (
-				<Text
-					variant={'secondary-regular'}
-					level={'h7'}
-					className='line-clamp-2'
-				>
-					{product.descriptions}
-				</Text>
-			),
-		},
-		{
-			title: 'Published',
-			key: 'publishedAt',
-			_className: 'h-[1lh]',
-			render: product => (
-				<Text
-					variant={'secondary-regular'}
-					level={'h7'}
-					className='line-clamp-2'
-				>
-					{numberToDate(product.publishedAt)},
-				</Text>
-			),
-		},
-		{
-			title: '',
-			key: 'images',
-			_className: 'h-[1lh]',
-			render: product => (
-				<div className='flex-ver gap-4'>
-					<PencilIcon
-						width={20}
-						height={20}
-						onClick={() => naviagte(product.productId + `?page=${currentPage}`)}
-						className='text-secondary cursor-pointer'
+	const columns: ITableColumn<Omit<IProduct, 'colors' | 'sizes'>>[] = useMemo(
+		() => [
+			{
+				title: '',
+				key: 'productId',
+				_style: { width: 100 },
+				_className: 'aspect-square rounded-lg',
+				render: product => (
+					<Image
+						src={product.images[0]}
+						alt={product.name}
+						shape={'rounded'}
+						containerClassName='w-20 aspect-square'
 					/>
-					<BinIcon
-						width={20}
-						height={20}
-						onClick={() => handleDeleteProduct(product.productId)}
-						className='text-secondary cursor-pointer'
-					/>
-				</div>
-			),
-		},
-	]
+				),
+			},
+			{
+				title: 'Name',
+				key: 'name',
+				_className: 'h-[1lh]',
+				render: product => (
+					<Text
+						variant={'secondary-regular'}
+						level={'h7'}
+						className='line-clamp-2'
+					>
+						{product.name}
+					</Text>
+				),
+			},
+			{
+				title: 'Price',
+				key: 'price',
+				_className: 'h-[1lh]',
+				render: product => (
+					<Text
+						variant={'secondary-regular'}
+						level={'h7'}
+					>
+						{numberToCurrency(product.price)}
+					</Text>
+				),
+			},
+			{
+				title: 'Description',
+				key: 'descriptions',
+				_className: 'h-[1lh]',
+				render: product => (
+					<Text
+						variant={'secondary-regular'}
+						level={'h7'}
+						className='line-clamp-2'
+					>
+						{product.descriptions}
+					</Text>
+				),
+			},
+			{
+				title: 'Published',
+				key: 'publishedAt',
+				_className: 'h-[1lh]',
+				render: product => (
+					<Text
+						variant={'secondary-regular'}
+						level={'h7'}
+						className='line-clamp-2'
+					>
+						{numberToDate(product.publishedAt)},
+					</Text>
+				),
+			},
+			{
+				title: '',
+				key: 'images',
+				_className: 'h-[1lh]',
+				render: product => (
+					<div className='flex-ver gap-4'>
+						<PencilIcon
+							width={20}
+							height={20}
+							onClick={() => naviagte(product.productId + `?page=${currentPage}`)}
+							className='text-secondary cursor-pointer'
+						/>
+						<BinIcon
+							width={20}
+							height={20}
+							onClick={() => handleDeleteProduct(product.productId)}
+							className='text-secondary cursor-pointer'
+						/>
+					</div>
+				),
+			},
+		],
+		[]
+	)
 
-	const handleDeleteProduct = async (productId: string) => {
+	const handleDeleteProduct = useCallback(async (productId: string) => {
 		openPopup({
 			content: 'This action will delete a product forever, are you sure about that ?',
 			type: 'confirm',
@@ -124,7 +127,7 @@ export const ProductTable = memo(() => {
 				})
 			},
 		})
-	}
+	}, [])
 
 	return (
 		<div className='table-fixed w-full'>

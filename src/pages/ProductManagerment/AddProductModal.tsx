@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChangeEvent, FC, useCallback, useRef, useState } from 'react'
+import { ChangeEvent, FC, memo, useCallback, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 
 import { CloseIcon } from '@/assets/icons/outlined'
 import { Button, Input } from '@/components/elements'
-import { ImagePreview } from './ImagePreview'
 import { useAddProductMutation } from '@/hooks/useProductMutation'
-import { useSearchParams } from 'react-router-dom'
+import { ImagePreview } from './ImagePreview'
 
 interface AddProductModalProps {
 	onClose: () => void
@@ -27,7 +27,7 @@ export type TImagePreview = {
 	urls: string[]
 }
 
-export const AddProductModal: FC<AddProductModalProps> = ({ onClose }) => {
+export const AddProductModal: FC<AddProductModalProps> = memo(({ onClose }) => {
 	const {
 		register,
 		handleSubmit,
@@ -184,4 +184,4 @@ export const AddProductModal: FC<AddProductModalProps> = ({ onClose }) => {
 			</div>
 		</form>
 	)
-}
+})

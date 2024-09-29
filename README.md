@@ -41,6 +41,7 @@ Open on web: http://localhost:5173
 ```
 
 - Routes:
+
   - Home: /
   - Admin Dashboard: /admin
 

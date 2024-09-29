@@ -1,9 +1,9 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 
 import { usePopup } from '@/hooks/usePopup'
 import { Button, Text } from '../../elements'
 
-export const GlobalPopup = () => {
+export const GlobalPopup = memo(() => {
 	const { type, content } = usePopup()
 
 	return (
@@ -11,18 +11,18 @@ export const GlobalPopup = () => {
 			{type === 'confirm' && <ConfirmationPopup />}
 		</div>
 	)
-}
+})
 
 const ConfirmationPopup = memo(() => {
-	const { content, closePopup, type, customTitle } = usePopup()
+	const { content, closePopup, customTitle } = usePopup()
 
-	const handleCancelClick = () => {
-		closePopup({ type, isConfirm: false })
-	}
+	const handleCancelClick = useCallback(() => {
+		closePopup({ type: 'confirm', isConfirm: false })
+	}, [])
 
-	const handleConfirmClick = () => {
-		closePopup({ type, isConfirm: true })
-	}
+	const handleConfirmClick = useCallback(() => {
+		closePopup({ type: 'confirm', isConfirm: true })
+	}, [])
 
 	return (
 		<div className='max-w-[500px] w-full flex flex-col p-8 rounded-xl bg-white'>

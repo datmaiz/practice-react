@@ -1,9 +1,11 @@
+import { memo } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import { LogoutIcon } from '@/assets/icons/outlined'
 import { Text } from '@/components/elements'
 import { useAuth, usePopup } from '@/hooks'
-import { useNavigate } from 'react-router-dom'
 
-export const AdminSidebarActions = () => {
+export const AdminSidebarActions = memo(() => {
 	const { openPopup } = usePopup()
 	const { deleteInfo } = useAuth()
 	const navigate = useNavigate()
@@ -44,4 +46,4 @@ export const AdminSidebarActions = () => {
 			</ul>
 		</div>
 	)
-}
+})

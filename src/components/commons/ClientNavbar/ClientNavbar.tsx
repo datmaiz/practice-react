@@ -1,14 +1,16 @@
+import { memo } from 'react'
+import { Link } from 'react-router-dom'
+
 import { CloseIcon } from '@/assets/icons/outlined'
 import { Text } from '@/components/elements'
-import { clientNavbarRoutes } from '@/utils'
-import { Link } from 'react-router-dom'
+import { clientNavbarRoutes } from '@/routes'
 
 interface ClientNavbarProps {
 	isNavOpened: boolean
 	onCloseNavbar: () => void
 }
 
-export const ClientNavbar = ({ isNavOpened, onCloseNavbar }: ClientNavbarProps) => {
+export const ClientNavbar = memo(({ isNavOpened, onCloseNavbar }: ClientNavbarProps) => {
 	return (
 		<nav className={`flex-center py-[38px] fixed sm:border-y border-black-600 sm:flex duration-300 sm:static`}>
 			<ul
@@ -35,4 +37,4 @@ export const ClientNavbar = ({ isNavOpened, onCloseNavbar }: ClientNavbarProps) 
 			</ul>
 		</nav>
 	)
-}
+})

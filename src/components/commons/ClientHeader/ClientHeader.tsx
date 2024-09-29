@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from 'react'
+import { memo, useCallback, useLayoutEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { BagIcon, GlassIcon, LogoutIcon, MenuIcon, PersonIcon } from '@/assets/icons/outlined'
@@ -9,7 +9,7 @@ import { Badge } from '../Badge/Badge'
 import { ClientNavbar } from '../ClientNavbar/ClientNavbar'
 import { SearchModal } from '../SearchModal/SearchModal'
 
-export const ClientHeader = () => {
+export const ClientHeader = memo(() => {
 	const [isNavOpened, setIsNavOpened] = useState<boolean>(false)
 	const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false)
 	const { openPopup } = usePopup()
@@ -33,6 +33,8 @@ export const ClientHeader = () => {
 	const handleCloseModal = useCallback(() => {
 		setIsSearchModalOpen(false)
 	}, [])
+
+	const closeNavbar = useCallback(() => setIsNavOpened(false), [])
 
 	useLayoutEffect(() => {
 		setIsNavOpened(false)
@@ -90,7 +92,7 @@ export const ClientHeader = () => {
 					</div>
 				</div>
 				<ClientNavbar
-					onCloseNavbar={() => setIsNavOpened(false)}
+					onCloseNavbar={closeNavbar}
 					isNavOpened={isNavOpened}
 				/>
 			</header>
@@ -100,4 +102,4 @@ export const ClientHeader = () => {
 			/>
 		</ClientContainer>
 	)
-}
+})
